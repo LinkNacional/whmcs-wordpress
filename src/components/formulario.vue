@@ -20,7 +20,6 @@
         filled
         lazy-rules
         type ="password"
-        hint="Criar uma senha de acesso"
       >
         <template v-slot:append>
           <q-icon
@@ -32,7 +31,7 @@
       </q-input>
 
       <div>
-        <q-btn label="Continuar" type="submit" color="primary"/>
+        <q-btn label="Continuar" @click="login" type="submit" color="primary"/>
         <q-btn
           label="Mais informações"
           type="reset"
@@ -50,21 +49,52 @@
 
 <script>
 // import { email, required, senha } from '../utils/validations'
-
+import { axiosInstance } from 'boot/axios'
 export default {
   data () {
     return {
       isPwd: true,
       formulario: {
         senha: '',
-        email: ''
+        email: '',
+        idCliente: '',
+        passwordhash: ''
       }
     }
   },
   methods: {
-    login () {
-      console.log(this.formulario)
 
+    async getUrl () {
+      axiosInstance.post('index.php', { action: 'login_direct_user', uid: this.formulario.idCliente })
+        .then((response) => {
+          if (response.data.result === 'success') {
+          // console.log('Sucesso ' + response.data.redirect_url)
+            this.url = response.data.redirect_url
+            window.location.href = this.url
+            return true
+          } else {
+          // console.log('Erro nos dados informados')
+          }
+        })
+      return false
+    },
+    async login () {
+      axiosInstance.post('index.php', { action: 'login', email: this.formulario.email, senha: this.formulario.senha })
+        .then((response) => {
+          if (response.data.result === 'success') {
+            this.formulario.idCliente = response.data.userid
+            this.formulario.passwordhash = response.data.passwordhash
+            this.getUrl()
+          } else if (response.data.result === 'notin') {
+            // this.$router.push({ name: 'pessoa', params: { data: this.formularioTelefone } })
+            // console.log('novo cadastro')
+            this.formulario.senha = null
+            this.$emit('continuar', this.formulario)
+          }
+        })
+        .catch((error) => {
+          console.log('Error ' + error.message)
+        })
       // this.$http.post(url, this.formulario)
       //   .then((response) => {
       //     console.log(response, 'funcionou')
