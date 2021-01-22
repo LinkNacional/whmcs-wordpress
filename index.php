@@ -50,14 +50,14 @@ if (!class_exists('login_whmcs_shortcode')) {
 
         public function func_load_vuescripts()
         {
-            wp_register_script('wpvue_vuejs', plugin_dir_url(__FILE__).'dist/spa/js/app.3f8d931d.js', true);
-            wp_register_script('wpvue_vuejs1', plugin_dir_url(__FILE__).'dist/spa/js/vendor.dc628a4c.js', true);
+            wp_register_script('wpvue_vuejs', plugin_dir_url(__FILE__).'dist/spa/js/app.2f576317.js', true);
+            wp_register_script('wpvue_vuejs1', plugin_dir_url(__FILE__).'dist/spa/js/vendor.6e0574b4.js', true);
             wp_register_script('wpvue_vuejs2', plugin_dir_url(__FILE__).'dist/spa/js/2.bf7586da.js', true);
             wp_register_script('wpvue_vuejs3', plugin_dir_url(__FILE__).'dist/spa/js/3.757d20cb.js', true);
-            wp_register_script('wpvue_vuejs4', plugin_dir_url(__FILE__).'dist/spa/js/4.a2ee6f4a.js', true);
+            wp_register_script('wpvue_vuejs4', plugin_dir_url(__FILE__).'dist/spa/js/4.7f103bc0.js', true);
 
             wp_enqueue_style('wpvue_vuecss', plugin_dir_url(__FILE__).'dist/spa/css/app.0e433876.css', true);
-            wp_enqueue_style('wpvue_vuecss1', plugin_dir_url(__FILE__).'dist/spa/css/vendor.c27c6ce1.css', true);
+            wp_enqueue_style('wpvue_vuecss1', plugin_dir_url(__FILE__).'dist/spa/css/vendor.e810699e.css', true);
         }
     }
     $matinalInit = new Wp_login_screen_whmcs();
