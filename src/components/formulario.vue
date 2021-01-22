@@ -19,7 +19,8 @@
         v-model="formulario.senha"
         filled
         lazy-rules
-        type ="password"
+        ref="senha"
+        :type="isPwd ? 'password' : 'text'"
       >
         <template v-slot:append>
           <q-icon
@@ -31,7 +32,7 @@
       </q-input>
 
       <div>
-        <q-btn label="Continuar" @click="login" type="submit" color="primary"/>
+        <q-btn label="Continuar" type="submit" color="primary"/>
         <q-btn
           label="Mais informações"
           type="reset"
@@ -79,22 +80,29 @@ export default {
       return false
     },
     async login () {
-      axiosInstance.post('index.php', { action: 'login', email: this.formulario.email, senha: this.formulario.senha })
-        .then((response) => {
-          if (response.data.result === 'success') {
-            this.formulario.idCliente = response.data.userid
-            this.formulario.passwordhash = response.data.passwordhash
-            this.getUrl()
-          } else if (response.data.result === 'notin') {
+      this.$refs.senha.validate()
+      console.log(this.$refs.senha.hasError)
+      if (this.formulario.email === '') {
+        this.mostrarMensagem('Para continuar, por favor informe um email.')
+      } else if (this.$refs.senha.hasError || this.formulario.senha === '') {
+        this.mostrarMensagem('Para continuar, por favor informe uma senha.')
+      } else {
+        axiosInstance.post('index.php', { action: 'login', email: this.formulario.email, senha: this.formulario.senha })
+          .then((response) => {
+            if (response.data.result === 'success') {
+              this.formulario.idCliente = response.data.userid
+              this.formulario.passwordhash = response.data.passwordhash
+              this.getUrl()
+            } else if (response.data.result === 'notin') {
             // this.$router.push({ name: 'pessoa', params: { data: this.formularioTelefone } })
             // console.log('novo cadastro')
-            this.formulario.senha = null
-            this.$emit('continuar', this.formulario)
-          }
-        })
-        .catch((error) => {
-          console.log('Error ' + error.message)
-        })
+              this.formulario.senha = null
+              this.$emit('continuar', this.formulario)
+            }
+          })
+          .catch((error) => {
+            console.log('Error ' + error.message)
+          })
       // this.$http.post(url, this.formulario)
       //   .then((response) => {
       //     console.log(response, 'funcionou')
@@ -102,8 +110,21 @@ export default {
       //   .catch((error) => {
       //     console.log(error, 'nao funcionou')
       //   })
-    }
-  },
-  name: 'formulario'
+      }
+    },
+    mostrarMensagem (msg) {
+      this.$q.notify({
+        progress: true,
+        message: msg,
+        color: 'primary',
+        multiLine: true,
+        // avatar: 'https://cdn.quasar.dev/img/boy-avatar.png',
+        actions: [
+          { label: 'Entendi', color: 'yellow', handler: () => { /* ... */ } }
+        ]
+      })
+    },
+    name: 'formulario'
+  }
 }
 </script>
