@@ -81,7 +81,6 @@ export default {
     },
     async login () {
       this.$refs.senha.validate()
-      console.log(this.$refs.senha.hasError)
       if (this.formulario.email === '') {
         this.mostrarMensagem('Para continuar, por favor informe um email.')
       } else if (this.$refs.senha.hasError || this.formulario.senha === '') {
@@ -89,15 +88,15 @@ export default {
       } else {
         axiosInstance.post('index.php', { action: 'login', email: this.formulario.email, senha: this.formulario.senha })
           .then((response) => {
+            console.log(response)
             if (response.data.result === 'success') {
               this.formulario.idCliente = response.data.userid
               this.formulario.passwordhash = response.data.passwordhash
               this.getUrl()
-            } else if (response.data.result === 'notin') {
-            // this.$router.push({ name: 'pessoa', params: { data: this.formularioTelefone } })
-            // console.log('novo cadastro')
-              this.formulario.senha = null
-              this.$emit('continuar', this.formulario)
+            } else if (response.data.message === 'Email or Password Invalid') {
+              this.mostrarMensagem('Email ou Senha Invalido')
+              // this.$router.push({ name: 'pessoa', params: { data: this.formularioTelefone } })
+              // console.log('novo cadastro')
             }
           })
           .catch((error) => {
