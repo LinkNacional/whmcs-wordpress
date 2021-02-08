@@ -2,7 +2,7 @@ import axios from 'axios'
 
 // Vue. prototype.$axios = axios
 const axiosInstance = axios.create({
-  baseURL: 'https://dev.linknacional.com.br/api/whmcs/',
+  baseURL: 'https://whmcs.linknacional.com.br/api',
   timeout: 90000
   // headers: { Accept: 'application/json; charset=utf-8', 'Content-Type': 'application/json' }
 })

@@ -1,13 +1,15 @@
 <template>
   <q-page class="flex flex-center">
-    <formulario/>
+    <!-- <formulario/> -->
+    <steps/>
   </q-page>
 </template>
 
 <script>
-import formulario from 'src/components/formulario.vue'
+// import formulario from 'src/components/formulario.vue'
+import steps from 'src/components/steps.vue'
 export default {
-  components: { formulario },
+  components: { steps },
   name: 'PageIndex',
   plano: null,
   created () {
