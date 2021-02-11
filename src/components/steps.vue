@@ -22,8 +22,7 @@
         v-model="formulario.email"
         type="email"
         label="Seu email"
-        hint="Insira um email válido"
-      />
+        />
 
       </q-step>
 
@@ -52,8 +51,8 @@
 
       <template v-slot:navigation>
         <q-stepper-navigation>
-          <q-btn @click="step !== 2 ? $refs.stepper.next() : login()" color="primary" :label="step === 2 ? 'Finish' : 'Continue'" />
-          <q-btn v-if="step > 1" flat color="primary" @click="$refs.stepper.previous()" label="Back" class="q-ml-sm" />
+          <q-btn @click="nextStep()" color="primary" :label="step === 2 ? 'Entrar' : 'Proximo'" />
+          <q-btn v-if="step > 1" flat color="primary" @click="$refs.stepper.previous()" label="Voltar" class="q-ml-sm" />
         </q-stepper-navigation>
       </template>
     </q-stepper>
@@ -63,6 +62,7 @@
 
 <script>
 import { axiosInstance } from 'boot/axios'
+
 export default {
   data () {
     return {
@@ -92,7 +92,6 @@ export default {
     },
     async login () {
       if (this.formulario.email === '') {
-        this.mostrarMensagem('Para continuar, por favor informe um email.')
       } else if (this.$refs.senha.hasError || this.formulario.senha === '') {
         this.mostrarMensagem('Para continuar, por favor informe uma senha.')
       } else {
@@ -111,6 +110,19 @@ export default {
           .catch((error) => {
             console.log(error)
           })
+      }
+    },
+    nextStep () {
+      if (this.step !== 2) {
+        console.log(this.formulario.email.indexOf('@'))
+        console.log(this.formulario.email.length - 1)
+        if (this.formulario.email === '' || this.formulario.email.indexOf('@') === -1 || this.formulario.email.indexOf('@') === this.formulario.email.length - 1) {
+          this.mostrarMensagem('Para continuar, por favor informe um email válido.')
+        } else {
+          this.$refs.stepper.next()
+        }
+      } else {
+        this.login()
       }
     },
     mostrarMensagem (msg) {
