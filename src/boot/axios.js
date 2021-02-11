@@ -2,13 +2,13 @@ import axios from 'axios'
 
 // Vue. prototype.$axios = axios
 const axiosInstance = axios.create({
-  baseURL: 'https://whmcs.linknacional.com.br/api',
+  baseURL: 'https://dev.linknacional.com.br/api/whmcs/',
   timeout: 90000
-  // headers: { Accept: 'application/json; charset=utf-8', 'Content-Type': 'application/json' }
+  // headers: { Accept: 'application/json;', 'Content-Type': 'application/json' }
 })
 
 const axiosInstanceDB = axios.create({
-  baseURL: 'https://cliente.linknacional.com.br/',
+  baseURL: 'https://whmcs.linknacional.com.br/whmcs/api/',
   timeout: 90000
   // headers: { Accept: 'application/json; charset=utf-8', 'Content-Type': 'application/json' }
 })

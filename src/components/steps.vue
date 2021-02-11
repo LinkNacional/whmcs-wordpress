@@ -96,6 +96,7 @@ export default {
       } else if (this.$refs.senha.hasError || this.formulario.senha === '') {
         this.mostrarMensagem('Para continuar, por favor informe uma senha.')
       } else {
+        console.log({ action: 'login', email: this.formulario.email, senha: this.formulario.senha })
         axiosInstance.post('index.php', { action: 'login', email: this.formulario.email, senha: this.formulario.senha })
           .then((response) => {
             console.log(response)
@@ -105,20 +106,11 @@ export default {
               this.getUrl()
             } else if (response.data.message === 'Email or Password Invalid') {
               this.mostrarMensagem('Email ou Senha Invalido')
-              // this.$router.push({ name: 'pessoa', params: { data: this.formularioTelefone } })
-              // console.log('novo cadastro')
             }
           })
           .catch((error) => {
-            console.log('Error ' + error.message)
+            console.log(error)
           })
-          // this.$http.post(url, this.formulario)
-          //   .then((response) => {
-          //     console.log(response, 'funcionou')
-          //   })
-          //   .catch((error) => {
-          //     console.log(error, 'nao funcionou')
-          //   })
       }
     },
     mostrarMensagem (msg) {
@@ -127,13 +119,11 @@ export default {
         message: msg,
         color: 'primary',
         multiLine: true,
-        // avatar: 'https://cdn.quasar.dev/img/boy-avatar.png',
         actions: [
           { label: 'Entendi', color: 'yellow', handler: () => { /* ... */ } }
         ]
       })
-    },
-    name: 'steps'
+    }
   }
 }
 </script>
