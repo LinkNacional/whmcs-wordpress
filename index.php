@@ -37,11 +37,11 @@ if (!class_exists('login_whmcs_shortcode')) {
         }
 
         public function func_load_vuescripts() {
-            wp_register_script('wpvue_vuejs', plugin_dir_url(__FILE__) . 'dist/spa/js/app.768f316d.js', true);
+            wp_register_script('wpvue_vuejs', plugin_dir_url(__FILE__) . 'dist/spa/js/app.ea932d28.js', true);
             wp_register_script('wpvue_vuejs1', plugin_dir_url(__FILE__) . 'dist/spa/js/vendor.e535d9b7.js', true);
             wp_register_script('wpvue_vuejs2', plugin_dir_url(__FILE__) . 'dist/spa/js/2.dcb47d05.js', true);
             wp_register_script('wpvue_vuejs3', plugin_dir_url(__FILE__) . 'dist/spa/js/3.757d20cb.js', true);
-            wp_register_script('wpvue_vuejs4', plugin_dir_url(__FILE__) . 'dist/spa/js/4.68c35e80.js', true);
+            wp_register_script('wpvue_vuejs4', plugin_dir_url(__FILE__) . 'dist/spa/js/4.a64c8fa9.js', true);
 
             wp_enqueue_style('wpvue_vuecss', plugin_dir_url(__FILE__) . 'dist/spa/css/app.0e433876.css', true);
             wp_enqueue_style('wpvue_vuecss1', plugin_dir_url(__FILE__) . 'dist/spa/css/vendor.e810699e.css', true);
