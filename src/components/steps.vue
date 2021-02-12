@@ -1,40 +1,44 @@
 <template>
   <div class="q-pa-md">
     <q-form class="q-gutter-md" >
-    <q-stepper
+      <q-stepper
       v-model="step"
-      header-nav
       ref="stepper"
       color="primary"
       animated
     >
-     <q-step
+      <q-step
         :name="1"
         title="Email"
         icon="email"
         :done="step > 1"
-        :header-nav="step > 1"
       >
         <q-input
         filled
-        lazy-rules
         autofocus
         v-model="formulario.email"
+        ref="email"
         type="email"
         label="Seu email"
+        :loading="emailInput.loadingState"
+        :rules="[ val => val.email !== '' || 'Digite um Email',
+        val => val.indexOf('@') !== -1 || 'Digite um Email Válido',
+        checkEmail,
+        val => emailInput.errorEmail || 'Não existe usuario com este email',
+        val => val.indexOf('@') !== val.length - 1 || 'Digite um Email Válido']"
         />
 
       </q-step>
 
-      <q-step
+       <q-step
         :name="2"
         title="Senha"
         icon="password"
+        :done="step > 2"
       >
        <q-input
         v-model="formulario.senha"
         filled
-        lazy-rules
         ref="senha"
         label="Sua senha"
         :type="isPwd ? 'password' : 'text'"
@@ -73,6 +77,10 @@ export default {
         email: '',
         idCliente: '',
         passwordhash: ''
+      },
+      emailInput: {
+        loadingState: false,
+        errorEmail: true
       }
     }
   },
@@ -87,24 +95,23 @@ export default {
           } else {
             console.log('Erro nos dados informados')
           }
+        }).catch((error) => {
+          console.log(error)
         })
       return false
     },
     async login () {
-      if (this.formulario.email === '') {
-      } else if (this.$refs.senha.hasError || this.formulario.senha === '') {
+      if (this.$refs.senha.hasError || this.formulario.senha === '') {
         this.mostrarMensagem('Para continuar, por favor informe uma senha.')
       } else {
-        console.log({ action: 'login', email: this.formulario.email, senha: this.formulario.senha })
         axiosInstance.post('index.php', { action: 'login', email: this.formulario.email, senha: this.formulario.senha })
           .then((response) => {
-            console.log(response)
             if (response.data.result === 'success') {
               this.formulario.idCliente = response.data.userid
               this.formulario.passwordhash = response.data.passwordhash
               this.getUrl()
             } else if (response.data.message === 'Email or Password Invalid') {
-              this.mostrarMensagem('Email ou Senha Invalido')
+              this.mostrarMensagem('E-mail ou senha inválido')
             }
           })
           .catch((error) => {
@@ -113,17 +120,34 @@ export default {
       }
     },
     nextStep () {
-      if (this.step !== 2) {
-        console.log(this.formulario.email.indexOf('@'))
-        console.log(this.formulario.email.length - 1)
-        if (this.formulario.email === '' || this.formulario.email.indexOf('@') === -1 || this.formulario.email.indexOf('@') === this.formulario.email.length - 1) {
+      if (this.step === 1) {
+        this.emailInput.errorEmail = false
+        if (this.$refs.email.hasError) {
           this.mostrarMensagem('Para continuar, por favor informe um email válido.')
+          this.$refs.email.focus()
         } else {
-          this.$refs.stepper.next()
+          this.checkEmail(this.formulario.email, true)
         }
-      } else {
-        this.login()
       }
+    },
+    async checkEmail (value = this.formulario.email, next = false) {
+      axiosInstance.post('index.php', { action: 'email_search_not_phone', email: this.formulario.email })
+        .then((response) => {
+          if (response.data.result === 'success') {
+            this.emailInput.errorEmail = true
+            this.$refs.email.validate()
+            if (next) {
+              this.$refs.stepper.next()
+            }
+            return true
+          } else if (response.data.result === 'notin') {
+            this.emailInput.errorEmail = false
+            this.$refs.email.validate()
+            return false
+          }
+        }).catch((error) => {
+          console.log(error)
+        })
     },
     mostrarMensagem (msg) {
       this.$q.notify({
