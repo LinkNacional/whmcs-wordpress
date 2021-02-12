@@ -1,5 +1,5 @@
 <template>
-  <div class="q-pa-md">
+  <div class="q-pa-xl">
     <q-form class="q-gutter-md" >
       <q-stepper
       v-model="step"
