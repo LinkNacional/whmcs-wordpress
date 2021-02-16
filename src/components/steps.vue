@@ -1,11 +1,12 @@
 <template>
   <div class="q-pa-xl">
-    <q-form class="q-gutter-md" >
+    <!-- <q-form class="q-gutter-md" > -->
       <q-stepper
       v-model="step"
       ref="stepper"
       color="primary"
       animated
+      done-color="green"
     >
       <q-step
         :name="1"
@@ -26,6 +27,7 @@
         checkEmail,
         val => emailInput.errorEmail || 'Não existe usuario com este email',
         val => val.indexOf('@') !== val.length - 1 || 'Digite um Email Válido']"
+        @keydown.enter.prevent="nextStep"
         />
 
       </q-step>
@@ -42,6 +44,8 @@
         ref="senha"
         label="Sua senha"
         :type="isPwd ? 'password' : 'text'"
+        @keydown.enter.prevent="nextStep"
+
       >
         <template v-slot:append>
           <q-icon
@@ -55,12 +59,14 @@
 
       <template v-slot:navigation>
         <q-stepper-navigation>
-          <q-btn @click="nextStep()" color="primary" :label="step === 2 ? 'Entrar' : 'Proximo'" />
-          <q-btn v-if="step > 1" flat color="primary" @click="$refs.stepper.previous()" label="Voltar" class="q-ml-sm" />
+          <q-btn @click="nextStep()" style="color:##0C71C3" color="primary" :label="step === 2 ? 'Entrar' : 'Proximo'" />
+          <q-btn v-if="step > 1" flat style="color:##0C71C3" @click="$refs.stepper.previous()" label="Voltar" class="q-ml-sm" />
+          <q-btn flat color="primary" onclick="window.location.href='https://whmcs.linknacional.com.br/register.php'" label="Registrar" class="q-ml-sm float-right" />
+          <q-btn flat style="color:#E31E17" onclick="window.location.href='https://whmcs.linknacional.com.br/index.php?rp=/password/reset'" label="Esqueceu a senha?" class="q-ml-sm float-right" />
         </q-stepper-navigation>
       </template>
     </q-stepper>
-    </q-form>
+    <!-- </q-form> -->
   </div>
 </template>
 
@@ -120,14 +126,19 @@ export default {
       }
     },
     nextStep () {
+      console.log(this.step)
       if (this.step === 1) {
         this.emailInput.errorEmail = false
-        if (this.$refs.email.hasError) {
+        if (this.$refs.email.hasError || this.formulario.email === '') {
           this.mostrarMensagem('Para continuar, por favor informe um email válido.')
+          this.emailInput.errorEmail = true
+          this.$refs.email.validate()
           this.$refs.email.focus()
         } else {
           this.checkEmail(this.formulario.email, true)
         }
+      } else {
+        this.login()
       }
     },
     async checkEmail (value = this.formulario.email, next = false) {
@@ -138,6 +149,9 @@ export default {
             this.$refs.email.validate()
             if (next) {
               this.$refs.stepper.next()
+              setTimeout(() => {
+                this.$refs.senha.focus()
+              }, 200)
             }
             return true
           } else if (response.data.result === 'notin') {

@@ -11,35 +11,71 @@ Version: 1.0.0
 
 //Check for direct access
 defined('ABSPATH') or exit('Please Keep Silence');
-
-// Constants
-define('LKN_DPLLMP_VERSION', '1.0.0');
-define('LKN_DPLLMP_OPTIONS_VERSION', '1');
-define('LKN_DPLLMP_SUPPORT_FORUM', 'https://www.linknacional.com.br/suporte');
-define('LKN_DPLLMP_WP_VERSION', '4.0');
-define('LKN_DPLLMP_WC_VERSION', '3.0');
-
-if (!class_exists('LKN_Divi_Wp_Loop_Matinal_Player')) {
+include_once 'file_get_html/simple_html_dom.php';
+if (!class_exists('login_whmcs_shortcode')) {
     /**
      * @author João Victor
      */
-    class Wp_login_screen_whmcs
-    {
-        public function __construct()
-        {
+    class Wp_login_screen_whmcs {
+        public function __construct() {
+            add_action('wp_enqueue_scripts', [$this, 'func_load_vuescripts']);
             add_shortcode('whmcslogin', [$this, 'login_whmcs_shortcode']);
         }
 
-        /// CRIAR O SHORTCODE DO
-        public function login_whmcs_shortcode($atts = [], $content = null, $tag = '')
-        {
-            $a = shortcode_atts([
-                'title' => '',
-                'hidefds' => '',
-                'class' => '',
-            ], $atts);
+        /// CRIAR O SHORTCODE
+        public function login_whmcs_shortcode($atts = [], $content = null, $tag = '') {
+            wp_enqueue_script('wpvue_vuejs1');
+            wp_enqueue_script('wpvue_vuejs2');
+            wp_enqueue_script('wpvue_vuejs3');
+            wp_enqueue_script('wpvue_vuejs4');
+            wp_enqueue_script('wpvue_vuejs5');
 
-            return '<div> teste123 </div>';
+            wp_enqueue_style('wpvue_vuecss1');
+            wp_enqueue_style('wpvue_vuecss2');
+
+            return file_get_html(plugin_dir_url(__FILE__) . 'dist/spa/index.html');
+            // return var_dump($this->list_files_js());
+        }
+
+        public function func_load_vuescripts() {
+            wp_register_script('wpvue_vuejs1', plugin_dir_url(__FILE__) . 'dist/spa/js/2.dcb47d05.js', true);
+            wp_register_script('wpvue_vuejs2', plugin_dir_url(__FILE__) . 'dist/spa/js/3.757d20cb.js', true);
+            wp_register_script('wpvue_vuejs3', plugin_dir_url(__FILE__) . 'dist/spa/js/4.8a6d8d91.js', true);
+            wp_register_script('wpvue_vuejs4', plugin_dir_url(__FILE__) . 'dist/spa/js/app.da698adb.js', true);
+            wp_register_script('wpvue_vuejs5', plugin_dir_url(__FILE__) . 'dist/spa/js/vendor.2733207c.js', true);
+
+            // $this->list_files_js();
+            $this->list_files_css();
+            // wp_enqueue_style('wpvue_vuecss', plugin_dir_url(__FILE__) . 'dist/spa/css/app.0e433876.css', true);
+            // wp_enqueue_style('wpvue_vuecss1', plugin_dir_url(__FILE__) . 'dist/spa/css/vendor.e810699e.css', true);
+        }
+
+        public function list_files_css() {
+            $path = './wp-content/plugins/loginWHMCS/dist/spa/css';
+            $diretorio = dir($path);
+            $names = [];
+            $cont = 1;
+            while ($arquivo = $diretorio->read()) {
+                $names[] = $arquivo;
+                wp_enqueue_style('wpvue_vuecss' . $cont, plugin_dir_url(__FILE__) . 'dist/spa/css/' . $arquivo, true);
+                $cont++;
+            }
+            $diretorio->close();
+            return $names;
+        }
+
+        public function list_files_js() {
+            $path = './wp-content/plugins/loginWHMCS/dist/spa/js';
+            $diretorio = dir($path);
+            $names = [];
+            $cont = 1;
+            while ($arquivo = $diretorio->read()) {
+                $names[] = $arquivo;
+                wp_register_script('wpvue_vuejs' . $cont, plugin_dir_url(__FILE__) . 'dist/spa/js/' . $arquivo, true);
+                $cont++;
+            }
+            $diretorio->close();
+            return $names;
         }
     }
     $matinalInit = new Wp_login_screen_whmcs();
