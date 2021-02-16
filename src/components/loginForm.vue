@@ -21,13 +21,13 @@
         ref="email"
         type="email"
         label="Seu email"
-        :loading="emailInput.loadingState"
         :rules="[ val => val.email !== '' || 'Digite um Email',
         val => val.indexOf('@') !== -1 || 'Digite um Email Válido',
-        checkEmail,
-        val => emailInput.errorEmail || 'Não existe usuario com este email',
+        val => errorInput.errorEmail || 'Não existe usuario com este email',
         val => val.indexOf('@') !== val.length - 1 || 'Digite um Email Válido']"
         @keydown.enter.prevent="nextStep"
+        lazy-rules="ondemand"
+        :loading="loadingState"
         />
 
       </q-step>
@@ -45,7 +45,10 @@
         label="Sua senha"
         :type="isPwd ? 'password' : 'text'"
         @keydown.enter.prevent="nextStep"
-
+        autocomplete="off"
+        :rules="[ val => errorInput.errorPassword || 'Digite uma senha válida']"
+        :loading="loadingState"
+        lazy-rules="ondemand"
       >
         <template v-slot:append>
           <q-icon
@@ -77,6 +80,7 @@ export default {
   data () {
     return {
       step: 1,
+      loadingState: false,
       isPwd: true,
       formulario: {
         senha: '',
@@ -84,9 +88,9 @@ export default {
         idCliente: '',
         passwordhash: ''
       },
-      emailInput: {
-        loadingState: false,
-        errorEmail: true
+      errorInput: {
+        errorEmail: true,
+        errorPassword: true
       }
     }
   },
@@ -97,69 +101,75 @@ export default {
           if (response.data.result === 'success') {
             this.url = response.data.redirect_url
             window.location.href = this.url
-            return true
           } else {
             console.log('Erro nos dados informados')
           }
         }).catch((error) => {
           console.log(error)
         })
-      return false
     },
     async login () {
+      this.$refs.senha.validate()
       if (this.$refs.senha.hasError || this.formulario.senha === '') {
+        this.errorInput.errorPassword = false
+        this.$refs.senha.validate()
+        this.errorInput.errorPassword = true
         this.mostrarMensagem('Para continuar, por favor informe uma senha.')
       } else {
+        this.loadingState = true
         axiosInstance.post('index.php', { action: 'login', email: this.formulario.email, senha: this.formulario.senha })
           .then((response) => {
             if (response.data.result === 'success') {
               this.formulario.idCliente = response.data.userid
               this.formulario.passwordhash = response.data.passwordhash
               this.getUrl()
+              this.loadingState = false
             } else if (response.data.message === 'Email or Password Invalid') {
+              this.loadingState = false
+              this.errorInput.errorPassword = false
+              this.$refs.senha.validate()
+              this.errorInput.errorPassword = true
               this.mostrarMensagem('E-mail ou senha inválido')
             }
           })
           .catch((error) => {
+            this.loadingState = false
             console.log(error)
           })
       }
     },
     nextStep () {
-      console.log(this.step)
       if (this.step === 1) {
-        this.emailInput.errorEmail = false
+        this.$refs.email.validate()
         if (this.$refs.email.hasError || this.formulario.email === '') {
-          this.mostrarMensagem('Para continuar, por favor informe um email válido.')
-          this.emailInput.errorEmail = true
           this.$refs.email.validate()
+          this.mostrarMensagem('Para continuar, por favor informe um email válido.')
           this.$refs.email.focus()
         } else {
-          this.checkEmail(this.formulario.email, true)
+          this.checkEmail()
         }
       } else {
         this.login()
       }
     },
-    async checkEmail (value = this.formulario.email, next = false) {
+    async checkEmail () {
+      this.loadingState = true
       axiosInstance.post('index.php', { action: 'email_search_not_phone', email: this.formulario.email })
         .then((response) => {
           if (response.data.result === 'success') {
-            this.emailInput.errorEmail = true
             this.$refs.email.validate()
-            if (next) {
-              this.$refs.stepper.next()
-              setTimeout(() => {
-                this.$refs.senha.focus()
-              }, 200)
-            }
-            return true
+            this.$refs.stepper.next()
+            setTimeout(() => {
+              this.$refs.senha.focus()
+            }, 200)
           } else if (response.data.result === 'notin') {
-            this.emailInput.errorEmail = false
+            this.errorInput.errorEmail = false
             this.$refs.email.validate()
-            return false
+            this.errorInput.errorEmail = true
           }
+          this.loadingState = false
         }).catch((error) => {
+          this.loadingState = false
           console.log(error)
         })
     },

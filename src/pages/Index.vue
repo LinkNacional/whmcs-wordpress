@@ -1,13 +1,13 @@
 <template>
   <q-page class="">
-    <steps/>
+    <loginForm/>
   </q-page>
 </template>
 
 <script>
-import steps from 'src/components/steps.vue'
+import loginForm from 'src/components/loginForm.vue'
 export default {
-  components: { steps },
+  components: { loginForm },
   name: 'PageIndex',
   created () {
   },
