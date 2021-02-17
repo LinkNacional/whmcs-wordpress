@@ -39,8 +39,8 @@ if (!class_exists('login_whmcs_shortcode')) {
         public function func_load_vuescripts() {
             wp_register_script('wpvue_vuejs1', plugin_dir_url(__FILE__) . 'dist/spa/js/2.dcb47d05.js', true);
             wp_register_script('wpvue_vuejs2', plugin_dir_url(__FILE__) . 'dist/spa/js/3.757d20cb.js', true);
-            wp_register_script('wpvue_vuejs3', plugin_dir_url(__FILE__) . 'dist/spa/js/4.1d0b4c11.js', true);
-            wp_register_script('wpvue_vuejs4', plugin_dir_url(__FILE__) . 'dist/spa/js/app.86f3e654.js', true);
+            wp_register_script('wpvue_vuejs3', plugin_dir_url(__FILE__) . 'dist/spa/js/4.df278f1f.js', true);
+            wp_register_script('wpvue_vuejs4', plugin_dir_url(__FILE__) . 'dist/spa/js/app.f06dfa57.js', true);
             wp_register_script('wpvue_vuejs5', plugin_dir_url(__FILE__) . 'dist/spa/js/vendor.5f15a21f.js', true);
 
             $this->list_files_css();
