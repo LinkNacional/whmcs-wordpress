@@ -37,6 +37,7 @@ if (!class_exists('login_whmcs_shortcode')) {
         }
 
         public function func_load_vuescripts() {
+            //atualizar os nomes sempre que compilar
             wp_register_script('wpvue_vuejs1', plugin_dir_url(__FILE__) . 'dist/spa/js/2.dcb47d05.js', true);
             wp_register_script('wpvue_vuejs2', plugin_dir_url(__FILE__) . 'dist/spa/js/3.757d20cb.js', true);
             wp_register_script('wpvue_vuejs3', plugin_dir_url(__FILE__) . 'dist/spa/js/4.ba6a6e8b.js', true);
