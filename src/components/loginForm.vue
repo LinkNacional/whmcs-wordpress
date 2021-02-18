@@ -36,12 +36,15 @@
         />
 
       </q-step>
-
        <q-step
         :name="2"
         icon="password"
         :done="step > 2"
       >
+      <div class="q-ma-none q-pb-lg">
+      <div class="text-h4 text-weight-thin">Login</div>
+      <hr />
+    </div>
        <q-input
         v-model="formulario.senha"
         filled
@@ -69,7 +72,7 @@
           <q-btn @click="nextStep()" style="color:##0C71C3" color="primary" :label="step === 2 ? 'Entrar' : 'Proximo'" />
           <q-btn v-if="step > 1" flat style="color:##0C71C3" @click="$refs.stepper.previous()" label="Voltar" class="q-ml-sm" />
           <q-btn flat color="primary" @click="deleteAllCookies" onclick="window.location.href='https://whmcs.linknacional.com.br/register.php'" label="Registrar" class="q-ml-sm float-right" />
-          <q-btn flat style="color:#E31E17" @click="deleteAllCookies" onclick=";window.location.href='https://whmcs.linknacional.com.br/index.php?rp=/password/reset'" label="Esqueceu a senha?" class="q-ml-sm float-right" />
+          <q-btn flat style="color:#E31E17" @click="deleteAllCookies" onclick="window.location.href='https://whmcs.linknacional.com.br/index.php?rp=/password/reset'" label="Esqueceu a senha?" class="q-ml-sm float-right" />
         </q-stepper-navigation>
       </template>
     </q-stepper>
@@ -77,13 +80,16 @@
 </template>
 
 <script>
-import { axiosInstance } from 'boot/axios'
-
+import { setUrl } from 'boot/axios'
 export default {
+  props: {
+    url: { required: true }
+  },
   data () {
     return {
       step: 1,
       loadingState: false,
+      axios: setUrl(this.url),
       isPwd: true,
       formulario: {
         senha: '',
@@ -99,7 +105,7 @@ export default {
   },
   methods: {
     async getUrl () {
-      axiosInstance.post('index.php', { action: 'login_direct_user', uid: this.formulario.idCliente })
+      this.axios.post('index.php', { action: 'login_direct_user', uid: this.formulario.idCliente })
         .then((response) => {
           if (response.data.result === 'success') {
             this.url = response.data.redirect_url
@@ -120,7 +126,7 @@ export default {
         this.mostrarMensagem('Para continuar, por favor informe uma senha.')
       } else {
         this.loadingState = true
-        axiosInstance.post('index.php', { action: 'login', email: this.formulario.email, senha: this.formulario.senha })
+        this.axios.post('index.php', { action: 'login', email: this.formulario.email, senha: this.formulario.senha })
           .then((response) => {
             if (response.data.result === 'success') {
               this.formulario.idCliente = response.data.userid
@@ -157,7 +163,7 @@ export default {
     },
     async checkEmail () {
       this.loadingState = true
-      axiosInstance.post('index.php', { action: 'email_search_not_phone', email: this.formulario.email })
+      this.axios.post('index.php', { action: 'email_search_not_phone', email: this.formulario.email })
         .then((response) => {
           if (response.data.result === 'success') {
             this.$refs.email.validate()

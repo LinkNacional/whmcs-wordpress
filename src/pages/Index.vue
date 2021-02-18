@@ -1,6 +1,6 @@
 <template>
   <q-page class="">
-    <loginForm/>
+    <loginForm :url="$route.params.url"/>
   </q-page>
 </template>
 
