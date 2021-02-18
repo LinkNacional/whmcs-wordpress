@@ -68,8 +68,8 @@
         <q-stepper-navigation>
           <q-btn @click="nextStep()" style="color:##0C71C3" color="primary" :label="step === 2 ? 'Entrar' : 'Proximo'" />
           <q-btn v-if="step > 1" flat style="color:##0C71C3" @click="$refs.stepper.previous()" label="Voltar" class="q-ml-sm" />
-          <q-btn flat color="primary" @click="deleteAllCookies" onclick="window.location.href='https://whmcs.linknacional.com.br/register.php'" label="Registrar" class="q-ml-sm float-right" />
-          <q-btn flat style="color:#E31E17" @click="deleteAllCookies" onclick=";window.location.href='https://whmcs.linknacional.com.br/index.php?rp=/password/reset'" label="Esqueceu a senha?" class="q-ml-sm float-right" />
+          <q-btn flat color="primary" @click="deleteAllCookies" v-bind:to="'https://whmcs.linknacional.com.br/register.php'" label="Registrar" class="q-ml-sm float-right" />
+          <q-btn flat style="color:#E31E17" @click="deleteAllCookies" v-bind:to="'https://whmcs.linknacional.com.br/index.php?rp=/password/reset'" label="Esqueceu a senha?" class="q-ml-sm float-right" />
         </q-stepper-navigation>
       </template>
     </q-stepper>
