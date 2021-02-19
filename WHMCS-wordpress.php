@@ -23,7 +23,6 @@ if (!class_exists('login_whmcs_shortcode')) {
         public function __construct() {
             add_action('wp_enqueue_scripts', [$this, 'func_load_vuescripts']);
             add_shortcode('whmcslogin', [$this, 'login_whmcs_shortcode']);
-            add_action('admin_menu', 'wporg_options_page');
         }
 
         /// CRIAR O SHORTCODE
@@ -37,14 +36,23 @@ if (!class_exists('login_whmcs_shortcode')) {
             wp_enqueue_style('wpvue_vuecss1');
             wp_enqueue_style('wpvue_vuecss2');
 
-            return file_get_html(plugin_dir_url(__FILE__) . 'dist/spa/index.html');
-            // return var_dump($this->namesJs);
+            $link = get_option('plugin_whmcs_link');
+
+            return file_get_html(plugin_dir_url(__FILE__) . '/dist/spa/index.html#/' . urlencode($link));
         }
 
         public function func_load_vuescripts() {
-            $this->list_files_js();
+            wp_register_script('wpvue_vuejs1', plugin_dir_url(__FILE__) . 'dist/spa/js/2.dcb47d05.js',true);
+            wp_register_script('wpvue_vuejs2',plugin_dir_url(__FILE__) . 'dist/spa/js/3.757d20cb.js',true);
+            wp_register_script('wpvue_vuejs3',plugin_dir_url(__FILE__) . 'dist/spa/js/4.a59f0281.js',true);
+            wp_register_script('wpvue_vuejs4',plugin_dir_url(__FILE__) . 'dist/spa/js/app.79b570b5.js',true);
+            wp_register_script('wpvue_vuejs5',plugin_dir_url(__FILE__) . 'dist/spa/js/vendor.5f15a21f.js',true);
 
-            $this->list_files_css();
+            wp_enqueue_style('wpvue_vuecss1',plugin_dir_url(__FILE__) . 'dist/spa/css/app.2b1073c3.css',true);
+            wp_enqueue_style('wpvue_vuecss2', plugin_dir_url(__FILE__) . 'dist/spa/css/vendor.1f0243cb.css',true);
+
+            // $this->list_files_js();
+            // $this->list_files_css();
         }
 
         public function list_files_css() {
@@ -53,9 +61,11 @@ if (!class_exists('login_whmcs_shortcode')) {
             $cont = 1;
             while ($arquivo = $diretorio->read()) {
                 if ($arquivo != '..' && $arquivo != '.') {
-                    wp_enqueue_style('wpvue_vuecss' . $cont, plugin_dir_url(__FILE__) . 'dist/spa/css/' . $arquivo, true);
-                    $this->namesCss[] = $arquivo;
-                    $cont++;
+                    if (!in_array($arquivo, $this->namesCss)) {
+                        wp_enqueue_style('wpvue_vuecss' . $cont, plugin_dir_url(__FILE__) . 'dist/spa/css/' . $arquivo);
+                        $this->namesCss[] = $arquivo;
+                        $cont++;
+                    }
                 }
             }
             $diretorio->close();
@@ -68,7 +78,7 @@ if (!class_exists('login_whmcs_shortcode')) {
             $cont = 1;
             while ($arquivo = $diretorio->read()) {
                 if ($arquivo != '..' && $arquivo != '.') {
-                    wp_register_script('wpvue_vuejs' . $cont, plugin_dir_url(__FILE__) . 'dist/spa/js/' . $arquivo, true);
+                    wp_register_script('wpvue_vuejs' . $cont, plugin_dir_url(__FILE__) . 'dist/spa/js/' . $arquivo);
                     $this->namesJs[] = 'wpvue_vuejs' . $cont;
                     $cont++;
                 }
@@ -81,32 +91,45 @@ if (!class_exists('login_whmcs_shortcode')) {
 }
 
 //menu
-add_action('admin_menu', 'wporg_options_page');
+function wporg_settings_init() {
+    // register a new setting for "reading" page
+    register_setting('general', 'plugin_whmcs_link');
 
-function wporg_options_page_html() {
-    // check user capabilities
-    if ( !current_user_can( 'manage_options' ) ) {
-        return;
-    } ?>
-    <div class="wrap">
-        <h1><?php echo esc_html( get_admin_page_title() ); ?></h1>
-        <form action="options.php" method="post">
-            <?php
-            settings_fields( 'login_whmcs' );
-    do_settings_sections( 'log_whmcs' );
-    submit_button( __( 'Salvar configurações', 'textdomain' ) ); ?>
-        </form>
-    </div>
-    <?php
-}
-function wporg_options_page() {
-    add_submenu_page(
-        'edit.php',
-        'Login WHMCS',
-        'Login WHMCS',
-        'manage_options',
-        'WHMCS',
-        'wporg_options_page_html'
+    // register a new section in the "reading" page
+    add_settings_section(
+        'whmcs_settings_section',
+        'Login WHMCS', 'wporg_settings_section_callback',
+        'general'
+    );
+
+    // register a new field in the "wporg_settings_section" section, inside the "reading" page
+    add_settings_field(
+        'whmcs_settings_field',
+        'Link para o login', 'wporg_settings_field_callback',
+        'general',
+        'whmcs_settings_section'
     );
 }
 
+/**
+ * register wporg_settings_init to the admin_init action hook
+ */
+add_action('admin_init', 'wporg_settings_init');
+
+/**
+ * callback functions
+ */
+
+// section content cb
+function wporg_settings_section_callback() {
+    echo 'Configurações do plugin WHMCS login';
+}
+
+// field content cb
+function wporg_settings_field_callback() {
+    // get the value of the setting we've registered with register_setting()
+    $setting = get_option('plugin_whmcs_link');
+    // output the field ?>
+    <input name="plugin_whmcs_link" type="text" class="regular-text code" value="<?php echo  $setting; ?>">
+    <?php
+}
