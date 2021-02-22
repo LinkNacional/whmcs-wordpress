@@ -27,32 +27,40 @@ if (!class_exists('login_whmcs_shortcode')) {
 
         /// CRIAR O SHORTCODE
         public function login_whmcs_shortcode($atts = [], $content = null, $tag = '') {
-            wp_enqueue_script('wpvue_vuejs1');
-            wp_enqueue_script('wpvue_vuejs2');
-            wp_enqueue_script('wpvue_vuejs3');
-            wp_enqueue_script('wpvue_vuejs4');
-            wp_enqueue_script('wpvue_vuejs5');
+            // wp_enqueue_script('wpvue_vuejs2');
+            // wp_enqueue_script('wpvue_vuejs3');
+            // wp_enqueue_script('wpvue_vuejs4');
+            // wp_enqueue_script('wpvue_vuejs5');
 
-            wp_enqueue_style('wpvue_vuecss1');
-            wp_enqueue_style('wpvue_vuecss2');
+            // wp_enqueue_style('wpvue_vuecss1');
+            // wp_enqueue_style('wpvue_vuecss2');
 
             $link = get_option('plugin_whmcs_link');
 
-            return file_get_html(plugin_dir_url(__FILE__) . '/dist/spa/index.html#/' . urlencode($link));
+            $curl = curl_init();
+            curl_setopt($curl, CURLOPT_URL, plugin_dir_url(__FILE__) . '/dist/spa/index.html');
+            // curl_setopt($curl, CURLOPT_HTTPHEADER, ['Content-type: application/json', 'User-Agent: whmcs_nfeio']);
+            curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
+            curl_setopt($curl, CURLOPT_CUSTOMREQUEST, 'GET');
+            curl_setopt($curl, CURLOPT_TIMEOUT, 10);
+            curl_setopt($curl, CURLOPT_CONNECTTIMEOUT, 30);
+            $response = curl_exec($curl);
+            curl_close($curl);
+            return $response;
         }
 
         public function func_load_vuescripts() {
-            wp_register_script('wpvue_vuejs1', plugin_dir_url(__FILE__) . 'dist/spa/js/2.dcb47d05.js',true);
-            wp_register_script('wpvue_vuejs2',plugin_dir_url(__FILE__) . 'dist/spa/js/3.757d20cb.js',true);
-            wp_register_script('wpvue_vuejs3',plugin_dir_url(__FILE__) . 'dist/spa/js/4.a59f0281.js',true);
-            wp_register_script('wpvue_vuejs4',plugin_dir_url(__FILE__) . 'dist/spa/js/app.79b570b5.js',true);
-            wp_register_script('wpvue_vuejs5',plugin_dir_url(__FILE__) . 'dist/spa/js/vendor.5f15a21f.js',true);
+            // wp_register_script('wpvue_vuejs1', plugin_dir_url(__FILE__) . 'dist/spa/js/1.90255e0e.js',true);
+            // wp_register_script('wpvue_vuejs2',plugin_dir_url(__FILE__) . 'dist/spa/js/3.8d1a5784.js',true);
+            // wp_register_script('wpvue_vuejs3',plugin_dir_url(__FILE__) . 'dist/spa/js/4.74771008.js',true);
+            // wp_register_script('wpvue_vuejs4',plugin_dir_url(__FILE__) . 'dist/spa/js/app.41357a0f.js',true);
+            // wp_register_script('wpvue_vuejs5',plugin_dir_url(__FILE__) . 'dist/spa/js/vendor.5f15a21f.js',true);
 
-            wp_enqueue_style('wpvue_vuecss1',plugin_dir_url(__FILE__) . 'dist/spa/css/app.2b1073c3.css',true);
-            wp_enqueue_style('wpvue_vuecss2', plugin_dir_url(__FILE__) . 'dist/spa/css/vendor.1f0243cb.css',true);
+            // wp_enqueue_style('wpvue_vuecss1',plugin_dir_url(__FILE__) . 'dist/spa/css/app.2b1073c3.css',true);
+            // wp_enqueue_style('wpvue_vuecss2', plugin_dir_url(__FILE__) . 'dist/spa/css/vendor.1f0243cb.css',true);
 
-            // $this->list_files_js();
-            // $this->list_files_css();
+            $this->list_files_js();
+            $this->list_files_css();
         }
 
         public function list_files_css() {
@@ -62,7 +70,7 @@ if (!class_exists('login_whmcs_shortcode')) {
             while ($arquivo = $diretorio->read()) {
                 if ($arquivo != '..' && $arquivo != '.') {
                     if (!in_array($arquivo, $this->namesCss)) {
-                        wp_enqueue_style('wpvue_vuecss' . $cont, plugin_dir_url(__FILE__) . 'dist/spa/css/' . $arquivo);
+                        wp_enqueue_style('wpvue_vuecss' . $cont, plugin_dir_url(__FILE__) . 'dist/spa/css/' . $arquivo,true);
                         $this->namesCss[] = $arquivo;
                         $cont++;
                     }
@@ -78,8 +86,8 @@ if (!class_exists('login_whmcs_shortcode')) {
             $cont = 1;
             while ($arquivo = $diretorio->read()) {
                 if ($arquivo != '..' && $arquivo != '.') {
-                    wp_register_script('wpvue_vuejs' . $cont, plugin_dir_url(__FILE__) . 'dist/spa/js/' . $arquivo);
-                    $this->namesJs[] = 'wpvue_vuejs' . $cont;
+                    wp_register_script('wpvue_vuejs' . $cont, plugin_dir_url(__FILE__) . 'dist/spa/js/' . $arquivo,true);
+                    $this->namesJs[] = $arquivo;
                     $cont++;
                 }
             }
