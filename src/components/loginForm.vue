@@ -14,6 +14,7 @@
         :name="1"
         icon="email"
         :done="step > 1"
+        title="email"
       >
     <div class="q-ma-none q-pb-lg">
       <div class="text-h4 text-weight-thin">Login</div>
@@ -40,6 +41,7 @@
         :name="2"
         icon="password"
         :done="step > 2"
+        title="senha"
       >
       <div class="q-ma-none q-pb-lg">
       <div class="text-h4 text-weight-thin">Login</div>
@@ -66,13 +68,12 @@
         </template>
       </q-input>
       </q-step>
-
       <template v-slot:navigation>
         <q-stepper-navigation>
           <q-btn @click="nextStep()" style="color:##0C71C3" color="primary" :label="step === 2 ? 'Entrar' : 'Proximo'" />
           <q-btn v-if="step > 1" flat style="color:##0C71C3" @click="$refs.stepper.previous()" label="Voltar" class="q-ml-sm" />
-          <q-btn flat color="primary" @click="deleteAllCookies" v-bind:to="'https://whmcs.linknacional.com.br/register.php'" label="Registrar" class="q-ml-sm float-right" />
-          <q-btn flat style="color:#E31E17" @click="deleteAllCookies" v-bind:to="'https://whmcs.linknacional.com.br/index.php?rp=/password/reset'" label="Esqueceu a senha?" class="q-ml-sm float-right" />
+          <q-btn flat color="primary" v-bind:to="'https://whmcs.linknacional.com.br/register.php'" label="Registrar" class="q-ml-sm float-right" />
+          <q-btn flat style="color:#E31E17" v-bind:to="'https://whmcs.linknacional.com.br/index.php?rp=/password/reset'" label="Esqueceu a senha?" class="q-ml-sm float-right" />
         </q-stepper-navigation>
       </template>
     </q-stepper>
@@ -83,14 +84,16 @@
 import { setUrl } from 'boot/axios'
 export default {
   props: {
-    url: { required: true }
+  },
+  render: {
   },
   data () {
     return {
       step: 1,
       loadingState: false,
-      axios: setUrl(this.url),
+      axios: setUrl,
       isPwd: true,
+      url: this.requestJson(),
       formulario: {
         senha: '',
         email: '',
@@ -104,6 +107,13 @@ export default {
     }
   },
   methods: {
+    async requestJson () {
+      var url = '/url.json'
+      fetch(url).then(res => res.json())
+        .then((out) => {
+          this.axios = this.axios(out.link)
+        }).catch(err => console.error(err))
+    },
     async getUrl () {
       this.axios.post('index.php', { action: 'login_direct_user', uid: this.formulario.idCliente })
         .then((response) => {
