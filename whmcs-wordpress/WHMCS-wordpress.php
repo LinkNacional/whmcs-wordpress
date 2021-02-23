@@ -102,7 +102,8 @@ if (!class_exists('login_whmcs_shortcode')) {
  */
 function prefix_get_endpoint_phrase() {
     // rest_ensure_response() wraps the data we want to return into a WP_REST_Response, and ensures it will be properly returned.
-    return rest_ensure_response( 'Hello World, this is the WordPress REST API' );
+    $array_return = ['url' => get_option('whmcs_login_url')];
+    return $array_return;
 }
 
 /**
