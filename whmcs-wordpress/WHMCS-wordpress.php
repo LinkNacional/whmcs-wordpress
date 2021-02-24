@@ -39,29 +39,13 @@ if (!class_exists('login_whmcs_shortcode')) {
             wp_enqueue_style('wpvue_vuecss1');
             wp_enqueue_style('wpvue_vuecss2');
 
-            $this->createJson();
             return file_get_html(plugin_dir_url(__FILE__) . 'dist/spa/index.html');
-            // return file_get_html(plugin_dir_url(__FILE__) . 'dist/spa/index.html');
         }
 
         public function func_load_vuescripts() {
             $this->list_files_js();
             $this->list_files_css();
         }
-
-        static public function getConfigs() {
-        }
-
-        // static public function createJson() {
-        //     try {
-        //         $link = get_option('plugin_whmcs_link');
-        //         $fp = fopen('../url.json', 'w+');
-        //         fwrite($fp, json_encode(['link' => $link]));
-        //         fclose($fp);
-        //     } catch (Exception $e) {
-        //         return $e->getMessage();
-        //     }
-        // }
 
         public function list_files_css() {
             $path = WP_PLUGIN_DIR . '/whmcs-wordpress/dist/spa/css';

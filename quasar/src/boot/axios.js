@@ -1,30 +1,22 @@
 import axios from 'axios'
-var link;
+var link = "";
+var axiosInstance;
 
 window.onload = function() {
   var url = '/url.json'
-  fetch(url).then(res => res.json())
-    .then((out) => {
-      link = out.link;
-    }).catch(err => console.error(err))
+    axios.post(url)
+    .then((response) => {
+      console.log(response.data.link)
+      link = response.data.link
+      axiosInstance = axios.create({
+        // baseURL: 'https://cliente.linknacional.com.br/solicitar/agenciamtc/whmcs/',
+        baseURL: link+"/wp-json/login-whmcs/v1/login/",
+        timeout: 90000
+        // headers: { 'Access-Control-Allow-Origin': '*', 'Access-Control-Allow-Methods': '*', 'Access-Control-Allow-Headers': '*' }
+      })
+    }, (error) => {
+      console.log(error);
+    });
 };
 
-const setUrl = function (url) {
-  const axiosInstance = axios.create({
-    baseURL: url,
-    timeout: 90000
-  })
-  return axiosInstance
-}
-
-const getJson = axios.create({
-  baseURL: '/',
-  timeout: 90000
-})
-
-const getConfigs = axios.create({
-  baseURL: link+"wp-json/hello-world/v1/phrase",
-  timeout: 90000
-})
-
-export { setUrl, getJson }
+export { axiosInstance }
