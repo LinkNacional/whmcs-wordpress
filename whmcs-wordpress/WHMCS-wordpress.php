@@ -12,7 +12,8 @@ Version: 1.0.0
 //Check for direct access
 defined('ABSPATH') or exit('Please Keep Silence');
 include_once 'plugins/file_get_html/simple_html_dom.php';
-include_once 'admin/page-admin.php';
+include_once 'admin/page_admin.php';
+include_once 'api/whmcs_api.php';
 
 if (!class_exists('login_whmcs_shortcode')) {
     /**
@@ -96,27 +97,3 @@ if (!class_exists('login_whmcs_shortcode')) {
     }
     $matinalInit = new Wp_login_screen_whmcs();
 }
-
-/**
- * This is our callback function that embeds our phrase in a WP_REST_Response
- */
-function prefix_get_endpoint_phrase() {
-    // rest_ensure_response() wraps the data we want to return into a WP_REST_Response, and ensures it will be properly returned.
-    $array_return = ['url' => get_option('whmcs_login_url')];
-    return $array_return;
-}
-
-/**
- * This function is where we register our routes for our example endpoint.
- */
-function prefix_register_example_routes() {
-    // register_rest_route() handles more arguments but we are going to stick to the basics for now.
-    register_rest_route( 'hello-world/v1', '/phrase', [
-        // By using this constant we ensure that when the WP_REST_Server changes our readable endpoints will work as intended.
-        'methods' => WP_REST_Server::READABLE,
-        // Here we register our callback. The callback is fired when this endpoint is matched by the WP_REST_Server class.
-        'callback' => 'prefix_get_endpoint_phrase',
-    ] );
-}
-
-add_action( 'rest_api_init', 'prefix_register_example_routes' );
