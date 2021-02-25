@@ -17,7 +17,7 @@
         title="email"
       >
     <div class="q-ma-none q-pb-lg">
-      <div class="text-h4 text-weight-thin">Login</div>
+      <div class="text-h4 text-weight-thin">Login área do cliente</div>
       <hr />
     </div>
         <q-input

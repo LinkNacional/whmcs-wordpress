@@ -82,7 +82,7 @@ module.exports = function (/* ctx */) {
     // https://quasar.dev/quasar-cli/quasar-conf-js#Property%3A-framework
     framework: {
       iconSet: 'material-icons', // Quasar icon set
-      lang: 'en-us', // Quasar language pack
+      lang: 'pt-br', // Quasar language pack
       config: {},
 
       // Possible values for "importStrategy":
@@ -122,7 +122,7 @@ module.exports = function (/* ctx */) {
       manifest: {
         name: 'login whmcs',
         short_name: 'login whmcs',
-        description: 'A Quasar Framework app',
+        description: 'Plugin de formulário de login do WHMCS dentro do WordPress',
         display: 'standalone',
         orientation: 'portrait',
         background_color: '#ffffff',
