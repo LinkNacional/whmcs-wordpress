@@ -72,8 +72,8 @@
         <q-stepper-navigation>
           <q-btn @click="nextStep()" style="color:##0C71C3" color="primary" :label="step === 2 ? 'Entrar' : 'Proximo'" />
           <q-btn v-if="step > 1" flat style="color:##0C71C3" @click="$refs.stepper.previous()" label="Voltar" class="q-ml-sm" />
-          <q-btn flat color="primary" @click="redirect_register" label="Registrar" class="q-ml-sm float-right" />
-          <q-btn flat style="color:#E31E17" @click="redirect_password" label="Esqueceu a senha?" class="q-ml-sm float-right" />
+          <q-btn flat  color="primary" v-on:click="redirect_register()" label="Registrar" class="q-ml-sm float-right" />
+          <q-btn flat style="color:#E31E17" v-on:click="redirect_password()" label="Esqueceu a senha?" class="q-ml-sm float-right" />
         </q-stepper-navigation>
       </template>
     </q-stepper>
@@ -88,6 +88,7 @@ export default {
       step: 1,
       loadingState: false,
       isPwd: true,
+      urls:'',
       formulario: {
         senha: '',
         email: '',
@@ -99,6 +100,8 @@ export default {
         errorPassword: true
       }
     }
+  },
+  mounted: function () {
   },
   methods: {
     async getUrl () {
@@ -121,7 +124,7 @@ export default {
         this.errorInput.errorPassword = false
         this.$refs.senha.validate()
         this.errorInput.errorPassword = true
-        this.mostrarMensagem('Para continuar, por favor informe uma senha.')
+        // this.mostrarMensagem('Para continuar, por favor informe uma senha.')
       } else {
         this.loadingState = true
         axiosInstance.post('', { action: 'ValidateLogin', email: this.formulario.email, senha: this.formulario.senha })
@@ -137,7 +140,7 @@ export default {
               this.errorInput.errorPassword = false
               this.$refs.senha.validate()
               this.errorInput.errorPassword = true
-              this.mostrarMensagem('senha inválida')
+              // this.mostrarMensagem('senha inválida')
             }
           })
           .catch((error) => {
@@ -151,7 +154,7 @@ export default {
         this.$refs.email.validate()
         if (this.$refs.email.hasError || this.formulario.email === '') {
           this.$refs.email.validate()
-          this.mostrarMensagem('Para continuar, por favor informe um email válido.')
+          // this.mostrarMensagem('Para continuar, por favor informe um email válido.')
           this.$refs.email.focus()
         } else {
           this.checkEmail()
@@ -181,29 +184,32 @@ export default {
           console.log(error)
         })
     },
-    mostrarMensagem (msg) {
-      this.$q.notify({
-        progress: true,
-        message: msg,
-        color: 'primary',
-        multiLine: true,
-        actions: [
-          { label: 'Entendi', color: 'yellow', handler: () => { /* ... */ } }
-        ]
+    // mostrarMensagem (msg) {
+    //   this.$q.notify({
+    //     progress: true,
+    //     message: msg,
+    //     color: 'primary',
+    //     multiLine: true,
+    //     actions: [
+    //       { label: 'Entendi', color: 'yellow', handler: () => { /* ... */ } }
+    //     ]
+    //   })
+    // },
+    redirect_password () {
+      axiosInstance.post('', { action: 'url_redirect' })
+        .then((response) => {
+          this.urls = response.data
+          window.location.href=this.urls.password
       })
+     
     },
     redirect_register () {
-      axiosInstance.post('', { action: 'redirect_register' })
+       axiosInstance.post('', { action: 'url_redirect' })
         .then((response) => {
-          window.location.href=response.data
+          this.urls = response.data
+          window.location.href=this.urls.register
       })
     },
-    redirect_password () {
-      axiosInstance.post('', { action: 'redirect_password' })
-        .then((response) => {
-          window.location.href=response.data
-      })
-    }
   }
 }
 </script>

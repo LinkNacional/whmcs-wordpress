@@ -93,15 +93,5 @@ function configs_submit() {
         update_option('whmcs_login_register_user',$_POST['whmcs_login_register_user']);
         update_option('whmcs_login_password_reset',$_POST['whmcs_login_password_reset']);
     }
-    createJson();
+    // createJson();
 }
-
- function createJson() {
-     try {
-         $fp = fopen($_SERVER['DOCUMENT_ROOT'] . '/url.json', 'w+');
-         fwrite($fp, json_encode(['link' => get_site_url()]));
-         fclose($fp);
-     } catch (Exception $e) {
-         return $e->getMessage();
-     }
- }

@@ -80,7 +80,7 @@ function post_actions( $request ) {
                     echo '{"result":"password"}';
                 /// NOVO CLIENTE
                 } else {
-                    echo '{"result":"new"}';
+                    echo '{"result":"notin"}';
                 }
             }
         }
@@ -103,14 +103,12 @@ function post_actions( $request ) {
             echo '{"result":"notin"}';
         }
     }
-    if ($request['action'] == 'redirect_register') {
-        $url = get_option('whmcs_login_register_user');
-        echo $url;
-    }
-    //action = checkEmail
-    if ($request['action'] == 'redirect_password') {
-        $url = get_option('whmcs_login_password_reset');
-        echo $url;
+    //action = url_redirect
+
+    if ($request['action'] == 'url_redirect') {
+        $url_password = get_option('whmcs_login_password_reset');
+        $url_register = get_option('whmcs_login_register_user');
+        echo json_encode(['password' => $url_password, 'register' => $url_register]);
     }
 }
 

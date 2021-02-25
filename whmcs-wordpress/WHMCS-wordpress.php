@@ -1,6 +1,6 @@
 <?php
 /*
-Plugin Name: Divi WP WHMCS login
+Plugin Name:WHMCS login
 Plugin URI: https://www.linknacional.com.br/
 Author URI: https://www.linknacional.com.br/
 Author: Link Nacional
@@ -81,3 +81,15 @@ if (!class_exists('login_whmcs_shortcode')) {
     }
     $matinalInit = new Wp_login_screen_whmcs();
 }
+
+function createJson() {
+    try {
+        $fp = fopen($_SERVER['DOCUMENT_ROOT'] . '/url.json', 'w+');
+        fwrite($fp, json_encode(['link' => get_site_url()]));
+        fclose($fp);
+    } catch (Exception $e) {
+        return $e->getMessage();
+    }
+}
+
+register_activation_hook(__FILE__, 'createJson' );

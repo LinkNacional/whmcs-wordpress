@@ -1,5 +1,5 @@
 import axios from 'axios'
-var link = "";
+var link;
 var axiosInstance;
 
 window.onload = function() {
