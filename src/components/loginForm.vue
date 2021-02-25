@@ -26,7 +26,7 @@
         v-model="formulario.email"
         ref="email"
         type="email"
-        label="Seu email"
+        label="Digite o endereço de e-mail cadastrado"
         :rules="[ val => val.email !== '' || 'Digite um e-mail',
         val => val.indexOf('@') !== -1 || 'Digite um e-mail cadastrado',
         val => errorInput.errorEmail || 'Não existe nenhum usuário cadastrado com este e-mail',
@@ -37,12 +37,7 @@
         />
 
       </q-step>
-       <q-step
-        :name="2"
-        icon="password"
-        :done="step > 2"
-        title="senha"
-      >
+       <q-step :name="2" icon="password" :done="step > 2" title="Senha" >
       <div class="q-ma-none q-pb-lg">
       <div class="text-h4 text-weight-thin">Login</div>
       <hr />
@@ -51,14 +46,13 @@
         v-model="formulario.senha"
         filled
         ref="senha"
-        label="Sua senha"
+        label="Digite a senha"
         :type="isPwd ? 'password' : 'text'"
         @keydown.enter.prevent="nextStep"
         autocomplete="off"
         :rules="[ val => errorInput.errorPassword || 'Digite sua senha de acesso']"
         :loading="loadingState"
-        lazy-rules="ondemand"
-      >
+        lazy-rules="ondemand" >
         <template v-slot:append>
           <q-icon
             :name="isPwd ? 'visibility_off' : 'visibility'"
