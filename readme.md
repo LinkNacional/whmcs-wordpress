@@ -18,7 +18,7 @@ após isso ira abrir submenus de configurações,se o plugin estiver instalado e
 
 [![](http://whmcs.linknacional.com.br/prints/config_open.png)](http://whmcs.linknacional.com.br/prints/config_open.png)
 
-dentro da pagina de configurações temos os campos 
+dentro da pagina de configurações temos os campos:
 * **identificador da API WHMCS** = sequência conseguida gerando uma credencial de API no WHMCS
 * **Segredo da API WHMCS** = sequência conseguida gerando uma credencial de API no WHMCS
 * **url do WHMCS** = url da instalação do WHMCS 
@@ -58,7 +58,7 @@ A action `ValidateLogin` recebe o E-mail e senha do usuario como no exemplo:
     }
 
 
-* **result** = *se o usuario existe e a senha esta correta* (`Int`)
+* **result** = *se o usuario existe e a senha esta correta* (`String`)
 * **userid** = *id do usuario* (`Int`)
 * **passwordhash** = *hash da senha* (`String`)
 * **twoFactorEnabled** = *autenticação em dois fatores* (`Bool`)
@@ -102,9 +102,9 @@ https://docs.whmcs.com/WHMCS_Single_Sign-On_Developer_Guide#Supported_Destinatio
     }
 
 
-* **result** = `se foi possivel criar o token` (Int)
-* **access_token** = `token de acesso valido por 60 segundos` (Int)
-* **redirect_url** = `url do WHMCS com token de acesso` (String)
+* **result** = *se foi possivel criar o token* (`Int`)
+* **access_token** =token de acesso valido por 60 segundos* (`Int`)
+* **redirect_url** = *url do WHMCS com token de acesso* (`String`)
 
 **possiveis erros**
 
@@ -112,12 +112,12 @@ dados enviados invalidos para criar o token:
 
     {"result":"notin"}
 
-## E-mail VALIDO
+## E-MAIL VALIDO
 A action `checkEmail` valida se existe um usuario com este E-mail:
 
     {
         "action":"checkEmail",
-        "email":"1"
+        "email":"emailDoUsuario@email.com"
     }
 * **action** = *a ação que esta sendo requisitada* (`String`) (`obrigatório`)
 * **email** = *E-mail a ser verificado* (`String`) (`obrigatório`)
@@ -129,7 +129,7 @@ A action `checkEmail` valida se existe um usuario com este E-mail:
     }
 
 
-* **result** = `se existe usuario com esse E-mail` (String)
+* **result** = *se existe usuario com esse E-mail* (`String`)
 
 **possiveis erros**
 
@@ -155,8 +155,8 @@ A action `url_redirect` retorna as urls dos campos `link para recuperar a senha 
     }
 
 
-* **password** = `url para recuperar a senha` (String)
-* **register** = `url para registrar-se` (String)
+* **password** = *url para recuperar a senha* (`String`)
+* **register** = *url para registrar-se* (`String`)
 
 **possiveis erros**
 
