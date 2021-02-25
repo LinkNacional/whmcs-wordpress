@@ -72,8 +72,8 @@
         <q-stepper-navigation>
           <q-btn @click="nextStep()" style="color:##0C71C3" color="primary" :label="step === 2 ? 'Entrar' : 'Proximo'" />
           <q-btn v-if="step > 1" flat style="color:##0C71C3" @click="$refs.stepper.previous()" label="Voltar" class="q-ml-sm" />
-          <q-btn flat color="primary" v-bind:to="'https://whmcs.linknacional.com.br/register.php'" label="Registrar" class="q-ml-sm float-right" />
-          <q-btn flat style="color:#E31E17" v-bind:to="'https://whmcs.linknacional.com.br/index.php?rp=/password/reset'" label="Esqueceu a senha?" class="q-ml-sm float-right" />
+          <q-btn flat  color="primary" v-on:click="redirect_register()" label="Registrar" class="q-ml-sm float-right" />
+          <q-btn flat style="color:#E31E17" v-on:click="redirect_password()" label="Esqueceu a senha?" class="q-ml-sm float-right" />
         </q-stepper-navigation>
       </template>
     </q-stepper>
@@ -81,19 +81,14 @@
 </template>
 
 <script>
-import { setUrl } from 'boot/axios'
+import { axiosInstance } from 'boot/axios'
 export default {
-  props: {
-  },
-  render: {
-  },
   data () {
     return {
       step: 1,
       loadingState: false,
-      axios: setUrl,
       isPwd: true,
-      url: this.requestJson(),
+      urls:'',
       formulario: {
         senha: '',
         email: '',
@@ -106,17 +101,13 @@ export default {
       }
     }
   },
+  mounted: function () {
+  },
   methods: {
-    async requestJson () {
-      var url = '/url.json'
-      fetch(url).then(res => res.json())
-        .then((out) => {
-          this.axios = this.axios(out.link)
-        }).catch(err => console.error(err))
-    },
     async getUrl () {
-      this.axios.post('index.php', { action: 'login_direct_user', uid: this.formulario.idCliente })
+      axiosInstance.post('', { action: 'CreateSsoToken', uid: this.formulario.idCliente })
         .then((response) => {
+            console.log(response)
           if (response.data.result === 'success') {
             this.url = response.data.redirect_url
             window.location.href = this.url
@@ -133,22 +124,23 @@ export default {
         this.errorInput.errorPassword = false
         this.$refs.senha.validate()
         this.errorInput.errorPassword = true
-        this.mostrarMensagem('Para continuar, por favor informe uma senha.')
+        // this.mostrarMensagem('Para continuar, por favor informe uma senha.')
       } else {
         this.loadingState = true
-        this.axios.post('index.php', { action: 'login', email: this.formulario.email, senha: this.formulario.senha })
+        axiosInstance.post('', { action: 'ValidateLogin', email: this.formulario.email, senha: this.formulario.senha })
           .then((response) => {
+            console.log(response)
             if (response.data.result === 'success') {
               this.formulario.idCliente = response.data.userid
               this.formulario.passwordhash = response.data.passwordhash
               this.getUrl()
               this.loadingState = false
-            } else if (response.data.message === 'Email or Password Invalid') {
+            } else if (response.data.result === 'password') {
               this.loadingState = false
               this.errorInput.errorPassword = false
               this.$refs.senha.validate()
               this.errorInput.errorPassword = true
-              this.mostrarMensagem('E-mail ou senha inválido')
+              // this.mostrarMensagem('senha inválida')
             }
           })
           .catch((error) => {
@@ -162,7 +154,7 @@ export default {
         this.$refs.email.validate()
         if (this.$refs.email.hasError || this.formulario.email === '') {
           this.$refs.email.validate()
-          this.mostrarMensagem('Para continuar, por favor informe um email válido.')
+          // this.mostrarMensagem('Para continuar, por favor informe um email válido.')
           this.$refs.email.focus()
         } else {
           this.checkEmail()
@@ -173,7 +165,7 @@ export default {
     },
     async checkEmail () {
       this.loadingState = true
-      this.axios.post('index.php', { action: 'email_search_not_phone', email: this.formulario.email })
+      axiosInstance.post('', { action: 'checkEmail', email: this.formulario.email })
         .then((response) => {
           if (response.data.result === 'success') {
             this.$refs.email.validate()
@@ -192,23 +184,32 @@ export default {
           console.log(error)
         })
     },
-    mostrarMensagem (msg) {
-      this.$q.notify({
-        progress: true,
-        message: msg,
-        color: 'primary',
-        multiLine: true,
-        actions: [
-          { label: 'Entendi', color: 'yellow', handler: () => { /* ... */ } }
-        ]
+    // mostrarMensagem (msg) {
+    //   this.$q.notify({
+    //     progress: true,
+    //     message: msg,
+    //     color: 'primary',
+    //     multiLine: true,
+    //     actions: [
+    //       { label: 'Entendi', color: 'yellow', handler: () => { /* ... */ } }
+    //     ]
+    //   })
+    // },
+    redirect_password () {
+      axiosInstance.post('', { action: 'url_redirect' })
+        .then((response) => {
+          this.urls = response.data
+          window.location.href=this.urls.password
+      })
+     
+    },
+    redirect_register () {
+       axiosInstance.post('', { action: 'url_redirect' })
+        .then((response) => {
+          this.urls = response.data
+          window.location.href=this.urls.register
       })
     },
-    btnRegistrar () {
-      window.location.href = 'https://whmcs.linknacional.com.br/register.php'
-    },
-    btnSenha () {
-      window.location.href = 'https://whmcs.linknacional.com.br/index.php?rp=/password/reset'
-    }
   }
 }
 </script>
