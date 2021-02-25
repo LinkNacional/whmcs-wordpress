@@ -153,7 +153,7 @@ A action `url_redirect` retorna as urls dos campos `link para recuperar a senha 
         'password' => 'http:\/\/example.test\/password\/reset',
         'register' => 'http:\/\/example.test\/register'
     }
-
+ 
 
 * **password** = *url para recuperar a senha* (`String`)
 * **register** = *url para registrar-se* (`String`)
