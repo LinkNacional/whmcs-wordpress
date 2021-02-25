@@ -82,7 +82,7 @@ export default {
       step: 1,
       loadingState: false,
       isPwd: true,
-      urls:'',
+      urls: '',
       formulario: {
         senha: '',
         email: '',
@@ -101,7 +101,7 @@ export default {
     async getUrl () {
       axiosInstance.post('', { action: 'CreateSsoToken', uid: this.formulario.idCliente })
         .then((response) => {
-            console.log(response)
+          console.log(response)
           if (response.data.result === 'success') {
             this.url = response.data.redirect_url
             window.location.href = this.url
@@ -193,17 +193,16 @@ export default {
       axiosInstance.post('', { action: 'url_redirect' })
         .then((response) => {
           this.urls = response.data
-          window.location.href=this.urls.password
-      })
-     
+          window.location.href = this.urls.password
+        })
     },
     redirect_register () {
-       axiosInstance.post('', { action: 'url_redirect' })
+      axiosInstance.post('', { action: 'url_redirect' })
         .then((response) => {
           this.urls = response.data
-          window.location.href=this.urls.register
-      })
-    },
+          window.location.href = this.urls.register
+        })
+    }
   }
 }
 </script>
