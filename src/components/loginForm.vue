@@ -27,10 +27,10 @@
         ref="email"
         type="email"
         label="Seu email"
-        :rules="[ val => val.email !== '' || 'Digite um Email',
-        val => val.indexOf('@') !== -1 || 'Digite um Email Válido',
-        val => errorInput.errorEmail || 'Não existe usuario com este email',
-        val => val.indexOf('@') !== val.length - 1 || 'Digite um Email Válido']"
+        :rules="[ val => val.email !== '' || 'Digite um e-mail',
+        val => val.indexOf('@') !== -1 || 'Digite um e-mail cadastrado',
+        val => errorInput.errorEmail || 'Não existe nenhum usuário cadastrado com este e-mail',
+        val => val.indexOf('@') !== val.length - 1 || 'Digite um e-mail válido']"
         @keydown.enter.prevent="nextStep"
         lazy-rules="ondemand"
         :loading="loadingState"
@@ -55,7 +55,7 @@
         :type="isPwd ? 'password' : 'text'"
         @keydown.enter.prevent="nextStep"
         autocomplete="off"
-        :rules="[ val => errorInput.errorPassword || 'Digite uma senha válida']"
+        :rules="[ val => errorInput.errorPassword || 'Digite sua senha de acesso']"
         :loading="loadingState"
         lazy-rules="ondemand"
       >
@@ -70,7 +70,7 @@
       </q-step>
       <template v-slot:navigation>
         <q-stepper-navigation>
-          <q-btn @click="nextStep()" style="color:##0C71C3" color="primary" :label="step === 2 ? 'Entrar' : 'Proximo'" />
+          <q-btn @click="nextStep()" style="color:##0C71C3" color="primary" :label="step === 2 ? 'Entrar' : 'Próximo'" />
           <q-btn v-if="step > 1" flat style="color:##0C71C3" @click="$refs.stepper.previous()" label="Voltar" class="q-ml-sm" />
           <q-btn flat  color="primary" v-on:click="redirect_register()" label="Registrar" class="q-ml-sm float-right" />
           <q-btn flat style="color:#E31E17" v-on:click="redirect_password()" label="Esqueceu a senha?" class="q-ml-sm float-right" />
