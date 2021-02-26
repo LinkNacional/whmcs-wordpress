@@ -39,7 +39,7 @@ if (!class_exists('login_whmcs_shortcode')) {
             wp_enqueue_style('wpvue_vuecss1');
             wp_enqueue_style('wpvue_vuecss2');
 
-            return "<script type='text/javascript'>var templateUrl = '" . get_site_url() . "'</script>" . file_get_html(plugin_dir_url(__FILE__) . 'dist/spa/index.html');
+            return "<script type='text/javascript'>var templateUrl = '" . get_site_url() . "'</script>" . '<div id=q-app></div>';
         }
 
         public function func_load_vuescripts() {
