@@ -11,7 +11,6 @@ Version: 1.0.0
 
 //Check for direct access
 defined('ABSPATH') or exit('Please Keep Silence');
-include_once 'plugins/file_get_html/simple_html_dom.php';
 include_once 'admin/page_admin.php';
 include_once 'api/whmcs_api.php';
 

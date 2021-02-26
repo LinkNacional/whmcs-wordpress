@@ -2,16 +2,17 @@
 O WHMCS login é um plugin wordpress que inclui um shortcode e uma API para login no WHMCS.
 
 # SHORTCODE
-Para inserir o shortcode do login da WHMCS primeiro autorize o acesso a `API REST` em `configurações>proteção por Senha` e marque a opção `Permitir acesso à API REST` ou `Allow REST API Access`
-
-[![](http://whmcs.linknacional.com.br/prints/restAPI.png)](http://whmcs.linknacional.com.br/prints/restAPI.png)
 
 
-Após isso adicione na sua página o código
+Para inserir o shortcode do login da WHMCS adicione na sua página o código
 
     [whmcslogin][/whmcslogin]
 
 o shortcode já vem com toda a comunicação com o WHMCS configurada,necessitando somente preencher os campos contidos no menu de configurações do plugin.
+
+se o seu wordpress estiver protegido por senha autorize o acesso a `API REST` em `configurações>proteção por Senha` e marque a opção `Permitir acesso à API REST` ou `Allow REST API Access`
+
+[![](http://whmcs.linknacional.com.br/prints/restAPI.png)](http://whmcs.linknacional.com.br/prints/restAPI.png)
 
 # Configurações
 No admin do wordpress entre em Configurações
