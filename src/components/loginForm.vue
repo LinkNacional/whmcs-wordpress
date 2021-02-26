@@ -101,7 +101,6 @@ export default {
     async getUrl () {
       axiosInstance.post('', { action: 'CreateSsoToken', uid: this.formulario.idCliente })
         .then((response) => {
-          console.log(response)
           if (response.data.result === 'success') {
             this.url = response.data.redirect_url
             window.location.href = this.url
@@ -123,11 +122,9 @@ export default {
         this.loadingState = true
         axiosInstance.post('', { action: 'ValidateLogin', email: this.formulario.email, senha: this.formulario.senha })
           .then((response) => {
-            console.log(response)
             if (response.data.result === 'success') {
-              this.formulario.idCliente = response.data.userid
-              this.formulario.passwordhash = response.data.passwordhash
-              this.getUrl()
+              this.url = response.data.redirect_url
+              window.location.href = this.url
               this.loadingState = false
             } else if (response.data.result === 'password') {
               this.loadingState = false
