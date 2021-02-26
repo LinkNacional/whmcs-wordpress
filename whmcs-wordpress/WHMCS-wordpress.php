@@ -11,7 +11,6 @@ Version: 1.0.0
 
 //Check for direct access
 defined('ABSPATH') or exit('Please Keep Silence');
-include_once 'plugins/file_get_html/simple_html_dom.php';
 include_once 'admin/page_admin.php';
 include_once 'api/whmcs_api.php';
 
@@ -39,7 +38,7 @@ if (!class_exists('login_whmcs_shortcode')) {
             wp_enqueue_style('wpvue_vuecss1');
             wp_enqueue_style('wpvue_vuecss2');
 
-            return "<script type='text/javascript'>var templateUrl = '" . get_site_url() . "'</script>" . file_get_html(plugin_dir_url(__FILE__) . 'dist/spa/index.html');
+            return "<script type='text/javascript'>var templateUrl = '" . get_site_url() . "'</script>" . "<div id='q-app'></div>";
         }
 
         public function func_load_vuescripts() {
