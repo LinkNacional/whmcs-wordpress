@@ -98,19 +98,6 @@ export default {
   mounted: function () {
   },
   methods: {
-    async getUrl () {
-      axiosInstance.post('', { action: 'CreateSsoToken', uid: this.formulario.idCliente })
-        .then((response) => {
-          if (response.data.result === 'success') {
-            this.url = response.data.redirect_url
-            window.location.href = this.url
-          } else {
-            console.log('Erro nos dados informados')
-          }
-        }).catch((error) => {
-          console.log(error)
-        })
-    },
     async login () {
       this.$refs.senha.validate()
       if (this.$refs.senha.hasError || this.formulario.senha === '') {

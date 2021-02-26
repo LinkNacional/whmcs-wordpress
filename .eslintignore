@@ -1,5 +1,6 @@
 /dist
 /src-bex/www
+/src/boot/axios.js
 /src-capacitor
 /src-cordova
 /.quasar
