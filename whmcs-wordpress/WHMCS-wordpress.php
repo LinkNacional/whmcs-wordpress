@@ -79,5 +79,5 @@ if (!class_exists('login_whmcs_shortcode')) {
             return true;
         }
     }
-    $matinalInit = new Wp_login_screen_whmcs();
 }
+$matinalInit = new Wp_login_screen_whmcs();
