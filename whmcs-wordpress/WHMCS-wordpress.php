@@ -35,7 +35,6 @@ if (!class_exists('login_whmcs_shortcode')) {
             wp_enqueue_script('wpvue_vuejs3');
             wp_enqueue_script('wpvue_vuejs4');
             wp_enqueue_script('wpvue_vuejs5');
-            wp_enqueue_script('js_url');
 
             wp_enqueue_style('wpvue_vuecss1');
             wp_enqueue_style('wpvue_vuecss2');
@@ -44,7 +43,6 @@ if (!class_exists('login_whmcs_shortcode')) {
         }
 
         public function func_load_vuescripts() {
-            wp_register_script('js_url', plugin_dir_url(__FILE__) . 'js_url.js',true);
             $this->list_files_js();
             $this->list_files_css();
         }
@@ -83,15 +81,3 @@ if (!class_exists('login_whmcs_shortcode')) {
     }
     $matinalInit = new Wp_login_screen_whmcs();
 }
-
-function createJson() {
-    try {
-        $fp = fopen($_SERVER['DOCUMENT_ROOT'] . '/url.json', 'w+');
-        fwrite($fp, json_encode(['link' => get_site_url()]));
-        fclose($fp);
-    } catch (Exception $e) {
-        return $e->getMessage();
-    }
-}
-
-register_activation_hook(__FILE__, 'createJson' );

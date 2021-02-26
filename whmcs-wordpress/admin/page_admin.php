@@ -93,5 +93,4 @@ function configs_submit() {
         update_option('whmcs_login_register_user',$_POST['whmcs_login_register_user']);
         update_option('whmcs_login_password_reset',$_POST['whmcs_login_password_reset']);
     }
-    // createJson();
 }
