@@ -57,16 +57,14 @@ A action `ValidateLogin` recebe o E-mail e senha do usuario como no exemplo:
 
     {
         "result": "success",
-        "userid": 1,
-        "passwordhash": "078709e495230974fe7dd9c5ae31b9725d",
-        "twoFactorEnabled": false
+        "access_token": "2b736cb9a0fd6f72dde393051",
+        "redirect_url": "https://meuwhmcs.com.br/oauth/singlesignon.php?access_token=2b736cb9a0fd6f72dde393051"
     }
 
 
 * **result** = *se o usuario existe e a senha esta correta* (`String`)
-* **userid** = *id do usuario* (`Int`)
-* **passwordhash** = *hash da senha* (`String`)
-* **twoFactorEnabled** = *autenticação em dois fatores* (`Bool`)
+* **access_token** = *token de acesso ao whmcs valido por 60 segundos* (`Int`)
+* **redirect_url** = *url com o token de acesso também valido por 60 segundos* (`String`)
 
 **possiveis erros**
 
@@ -79,43 +77,10 @@ não existe usuario com este E-mail:
 
     {"result":"notin"}
 
+não é possivel criar uma sessão:
 
-## CRIAR TOKEN
-A action `CreateSsoToken` valida o login e retorna um token de acesso valido por `60 segundos` e uma url já autenticada:
+    {"result":"notinSession"}
 
-    {
-        "action":"CreateSsoToken",
-        "clid":"1",
-        "uid":"2",
-        "destination":"profile"
-    }
-* **action** = *a ação que esta sendo requisitada* (`String`) (`obrigatório`)
-* **clid** = *ID do cliente* (`String`) (`obrigatório`)
-* **uid** = *ID do usuário administrador que deve ser authenitcado. Se não for fornecido, o proprietário do cliente solicitado será assumido* (`String`) (`opcional`)
-* **destination** = *página para onde o redirecionamento vai mandar o usuario autenticado. Se não for fornecido, o destino será a página inicial da área do cliente* (`String`) (`opcional`)
-
-pode se ver a lista de `destination` em 
-https://docs.whmcs.com/WHMCS_Single_Sign-On_Developer_Guide#Supported_Destinations
- (retirar a `clientarea:` da requisição)
-
- e como retorno:
-
-    {
-        "result": "success",
-        "access_token": "afaed4482ad1e6b75492cdd421",
-        "redirect_url": "http:\/\/example.test\/oauth\/singlesignon.php?access_token=afaed4482ad1e6b75492cdd421"
-    }
-
-
-* **result** = *se foi possivel criar o token* (`Int`)
-* **access_token** =token de acesso valido por 60 segundos* (`Int`)
-* **redirect_url** = *url do WHMCS com token de acesso* (`String`)
-
-**possiveis erros**
-
-dados enviados invalidos para criar o token:
-
-    {"result":"notin"}
 
 ## E-MAIL VALIDO
 A action `checkEmail` valida se existe um usuario com este E-mail:

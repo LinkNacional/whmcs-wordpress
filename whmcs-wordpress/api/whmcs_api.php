@@ -14,25 +14,15 @@ function login($identifier,$secret,$request) {
     return connect($array);
 }
 
-function createToken($identifier,$secret,$request) {
+function createToken($identifier,$secret,$clid) {
     $array = [
         'action' => 'CreateSsoToken',
         'username' => $identifier,
         'password' => $secret,
         'responsetype' => 'json',
+        'client_id' => $clid
     ];
-    if (isset($request['clid'])) {
-        $arrayClient = ['client_id' => $request['clid']];
-        $array = array_merge($array,$arrayClient);
-    }
-    if (isset($request['uid'])) {
-        $arrayUser = ['user_id' => $request['uid']];
-        $array = array_merge($array,$arrayUser);
-    }
-    if (isset($request['destination'])) {
-        $arrayArea = ['destination' => 'clientarea:' . $request['destination']];
-        $array = array_merge($array, $arrayArea);
-    }
+
     return connect($array);
 }
 
@@ -71,7 +61,13 @@ function post_actions( $request ) {
     if ($request['action'] == 'ValidateLogin') {
         $resLogin = login($identifier,$secret,$request);
         if (json_decode($resLogin)->result === 'success') {
-            echo $resLogin;
+            $userid = json_decode($resLogin)->userid;
+            $resToken = createToken($identifier,$secret,$userid);
+            if ($resToken != null) {
+                echo $resToken; /// Sessão iniciada
+            } else {
+                echo '{"result":"notinSession"}';  /// Sessão falhou
+            }
         } else {
             if (json_decode($resLogin)->result === 'error') {
                 /// pesquisar se o email esta cadastrado com usuário.
@@ -85,15 +81,6 @@ function post_actions( $request ) {
             }
         }
     }
-    //action = CreateSsoToken
-    if ($request['action'] == 'CreateSsoToken') {
-        $resToken = createToken($identifier,$secret,$request);
-        if ($resToken != null) {
-            echo $resToken; /// Sessão iniciada
-        } else {
-            echo '{"result":"notin"}';  /// Sessão falhou
-        }
-    } 
     //action = checkEmail
     if ($request['action'] == 'checkEmail') {
         if (json_decode(searchByEmail($identifier, $secret, $request['email']))->totalresults >= 1) {
