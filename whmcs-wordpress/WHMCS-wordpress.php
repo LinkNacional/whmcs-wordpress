@@ -35,14 +35,16 @@ if (!class_exists('login_whmcs_shortcode')) {
             wp_enqueue_script('wpvue_vuejs3');
             wp_enqueue_script('wpvue_vuejs4');
             wp_enqueue_script('wpvue_vuejs5');
+            wp_enqueue_script('js_url');
 
             wp_enqueue_style('wpvue_vuecss1');
             wp_enqueue_style('wpvue_vuecss2');
 
-            return file_get_html(plugin_dir_url(__FILE__) . 'dist/spa/index.html');
+            return "<script type='text/javascript'>var templateUrl = '" . get_site_url() . "'</script>" . file_get_html(plugin_dir_url(__FILE__) . 'dist/spa/index.html');
         }
 
         public function func_load_vuescripts() {
+            wp_register_script('js_url', plugin_dir_url(__FILE__) . 'js_url.js',true);
             $this->list_files_js();
             $this->list_files_css();
         }
