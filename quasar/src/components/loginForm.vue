@@ -64,20 +64,15 @@
       <template v-slot:navigation>
         <q-stepper-navigation>
           <div class="row">
-            <div class="col-3" style="min-width: 70px;">
-              <q-btn @click="nextStep()" style="color:##0C71C3;" color="primary"  :label="step === 2 ? 'Entrar' : 'Próximo'" />
-            </div>
+              <q-btn class="col-2 responsive-button" @click="nextStep()" style="color:##0C71C3;min-width:5%" color="primary"  :label="step === 2 ? 'Entrar' : 'Próximo'" />
 
-            <div class="col-6" style="min-width: 10px;"></div>
+            <div v-if="step == 1" class="col-8 responsive-div"></div>
+            <div v-if="BtnPassword" class="col-6 responsive-div"></div>
 
-            <div class="col-3" style="min-width: 70px;" v-if="step == 1">
-              <q-btn flat color="primary" v-on:click="redirect_register()" label="Registrar" class="col" />
-            </div>
+              <q-btn class="col-2 responsive-button" v-if="step == 1" flat color="primary" v-on:click="redirect_register()" label="Registrar" />
 
-            <div class="col-3" style="min-width: 70px;" v-if="BtnPassword" >
-              <q-btn flat v-on:click="redirect_password()" style="color:#E31E17" label="Esqueceu a senha?" />
-            </div>
-          <div>
+              <q-btn class="col-4 responsive-button" v-if="BtnPassword" flat v-on:click="redirect_password()" style="color:#E31E17" label="Esqueceu a senha?" />
+          </div>
         </q-stepper-navigation>
       </template>
     </q-stepper>
