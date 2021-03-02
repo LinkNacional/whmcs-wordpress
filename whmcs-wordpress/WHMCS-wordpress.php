@@ -25,6 +25,7 @@ if (!class_exists('login_whmcs_shortcode')) {
         public function __construct() {
             add_action('wp_enqueue_scripts', [$this, 'func_load_vuescripts']);
             add_shortcode('whmcslogin', [$this, 'login_whmcs_shortcode']);
+            add_filter( 'plugin_action_links_whmcs-wordpress/WHMCS-wordpress.php', [__CLASS__, 'plugin_links'] );
         }
 
         /// CRIAR O SHORTCODE
@@ -81,6 +82,11 @@ if (!class_exists('login_whmcs_shortcode')) {
             }
             $diretorio->close();
             return true;
+        }
+
+        public static function plugin_links( $links ) {
+            $links[] = '<a href="' . admin_url( 'options-general.php?page=Login_whmcs' ) . '">' . __( 'Settings', 'Login_whmcs' ) . '</a>';
+            return $links;
         }
     }
 }
