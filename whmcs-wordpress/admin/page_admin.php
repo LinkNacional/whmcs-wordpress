@@ -13,10 +13,25 @@ function wporg_options_page() {
     add_action( 'load-' . $hookname, 'configs_submit' );
 }
 
+function replaceCharacters($string) {
+    $string = strlen($string);
+    return str_repeat('0',$string);
+}
+
+function checkCharacters($string) {
+    if (substr_count($string, '0') == strlen($string)) {
+        return false;
+    } else {
+        return true;
+    }
+}
+
 function pageConfig() {
     if ( !current_user_can( 'manage_options' ) ) {
         return;
-    } ?>
+    } 
+    $id_whmcs = replaceCharacters(get_option('whmcs_login_identifier'));
+    $secret_whmcs = replaceCharacters(get_option('whmcs_login_secret')); ?>
       <div class="wrap">
         <h1><?php echo esc_html( get_admin_page_title() ); ?></h1>
         <form action="<?php menu_page_url( 'wporg' ) ?>" method="post">
@@ -30,7 +45,7 @@ function pageConfig() {
                         <label for="whmcs_login_identifier">identificador da API WHMCS</label>
                     </th>
                     <td>
-                        <input name="whmcs_login_identifier" type="password" id="whmcs_login_identifier" value="<?php echo get_option('whmcs_login_identifier') ?>" class="regular-text">
+                        <input name="whmcs_login_identifier" type="password" id="whmcs_login_identifier" value="<?php echo $id_whmcs ?>" class="regular-text">
                     </td>
                 </tr>
                 <tr>
@@ -38,7 +53,7 @@ function pageConfig() {
                         <label for="whmcs_login_secret">Segredo da API WHMCS</label>
                     </th>
                     <td>
-                        <input name="whmcs_login_secret" type="password" id="whmcs_login_secret" value="<?php echo get_option('whmcs_login_secret') ?>" class="regular-text">
+                        <input name="whmcs_login_secret" type="password" id="whmcs_login_secret" value="<?php echo $secret_whmcs ?>" class="regular-text">
                     </td>
                 </tr>
                 <tr>
@@ -82,8 +97,13 @@ function configs_submit() {
             $_POST['whmcs_login_url'] = $_POST['whmcs_login_url'] . '/';
         }
         update_option('whmcs_login_url',$_POST['whmcs_login_url']);
-        update_option('whmcs_login_identifier',$_POST['whmcs_login_identifier']);
-        update_option('whmcs_login_secret',$_POST['whmcs_login_secret']);
+
+        if (checkCharacters($_POST['whmcs_login_identifier'])) {
+            update_option('whmcs_login_identifier',$_POST['whmcs_login_identifier']);
+        }
+        if (checkCharacters($_POST['whmcs_login_secret'])) {
+            update_option('whmcs_login_secret',$_POST['whmcs_login_secret']);
+        }
         update_option('whmcs_login_register_user',$_POST['whmcs_login_register_user']);
         update_option('whmcs_login_password_reset',$_POST['whmcs_login_password_reset']);
     }
