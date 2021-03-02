@@ -11,6 +11,7 @@ Version: 1.0.0
 
 //Check for direct access
 defined('ABSPATH') or exit('Please Keep Silence');
+include_once 'plugins/file_get_html/simple_html_dom.php';
 include_once 'admin/page_admin.php';
 include_once 'api/whmcs_api.php';
 
@@ -25,7 +26,6 @@ if (!class_exists('login_whmcs_shortcode')) {
         public function __construct() {
             add_action('wp_enqueue_scripts', [$this, 'func_load_vuescripts']);
             add_shortcode('whmcslogin', [$this, 'login_whmcs_shortcode']);
-            add_filter( 'plugin_action_links_whmcs-wordpress/WHMCS-wordpress.php', [__CLASS__, 'plugin_links'] );
         }
 
         /// CRIAR O SHORTCODE
@@ -35,19 +35,16 @@ if (!class_exists('login_whmcs_shortcode')) {
             wp_enqueue_script('wpvue_vuejs3');
             wp_enqueue_script('wpvue_vuejs4');
             wp_enqueue_script('wpvue_vuejs5');
+            wp_enqueue_script('js_url');
 
             wp_enqueue_style('wpvue_vuecss1');
             wp_enqueue_style('wpvue_vuecss2');
-            $return = "<script type='text/javascript'>" .
-            "var login_whmcs_url = '" . get_site_url() . 
-            "'; var login_whmcs_content = '" . $content . 
-            "'; var login_whmcs_size = '" . $atts['size'] . 
-            "'</script>"
-            . "<div id='q-app'></div>";
-            return $return;
+
+            return "<script type='text/javascript'>var templateUrl = '" . get_site_url() . "'</script>" . file_get_html(plugin_dir_url(__FILE__) . 'dist/spa/index.html');
         }
 
         public function func_load_vuescripts() {
+            wp_register_script('js_url', plugin_dir_url(__FILE__) . 'js_url.js',true);
             $this->list_files_js();
             $this->list_files_css();
         }
@@ -83,11 +80,18 @@ if (!class_exists('login_whmcs_shortcode')) {
             $diretorio->close();
             return true;
         }
+    }
+    $matinalInit = new Wp_login_screen_whmcs();
+}
 
-        public static function plugin_links( $links ) {
-            $links[] = '<a href="' . admin_url( 'options-general.php?page=Login_whmcs' ) . '">' . __( 'Settings', 'Login_whmcs' ) . '</a>';
-            return $links;
-        }
+function createJson() {
+    try {
+        $fp = fopen($_SERVER['DOCUMENT_ROOT'] . '/url.json', 'w+');
+        fwrite($fp, json_encode(['link' => get_site_url()]));
+        fclose($fp);
+    } catch (Exception $e) {
+        return $e->getMessage();
     }
 }
-$matinalInit = new Wp_login_screen_whmcs();
+
+register_activation_hook(__FILE__, 'createJson' );
