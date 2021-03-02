@@ -8,7 +8,6 @@
   </q-layout>
 </template>
 <script>
-
 export default {
   name: 'MainLayout',
   components: { },

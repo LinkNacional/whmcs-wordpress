@@ -6,12 +6,17 @@ O WHMCS login é um plugin wordpress que inclui um shortcode e uma API para logi
 
 Para inserir o shortcode do login da WHMCS adicione na sua página o código
 
+<<<<<<< HEAD
     [whmcslogin size='q-pa-xl'*]Texto para ser incluido no cabeçalho do login**[/whmcslogin]
 
 ###### *tamanho e alinhamento do card,ver sintaxe valida em https://quasar.dev/style/spacing
 ###### se vazio o valor ira ser definido como 'q-pa-xl'
 ###### **se vazio não ira aparecer a div do cabeçalho
 ###### |
+=======
+    [whmcslogin][/whmcslogin]
+
+>>>>>>> b5b663ffab2f62f60313bffefa3ec2a2ba9dfadd
 o shortcode já vem com toda a comunicação com o WHMCS configurada,necessitando somente preencher os campos contidos no menu de configurações do plugin.
 
 se o seu wordpress estiver protegido por senha autorize o acesso a `API REST` em `configurações>proteção por Senha` e marque a opção `Permitir acesso à API REST` ou `Allow REST API Access`
@@ -140,4 +145,8 @@ se receber algum parâmetro vazio verificar se foram salvos nas configurações 
     {
         'password' => '',
         'register' => ''
+<<<<<<< HEAD
     }
+=======
+    }
+>>>>>>> b5b663ffab2f62f60313bffefa3ec2a2ba9dfadd
