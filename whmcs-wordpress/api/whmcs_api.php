@@ -90,8 +90,8 @@ function post_actions( $request ) {
             echo '{"result":"notin"}';
         }
     }
-    //action = url_redirect
 
+    //action = url_redirect
     if ($request['action'] == 'url_redirect') {
         $url_password = get_option('whmcs_login_password_reset');
         $url_register = get_option('whmcs_login_register_user');

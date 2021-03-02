@@ -1,12 +1,13 @@
 <?php
 /*
-Plugin Name:WHMCS login
-Plugin URI: https://www.linknacional.com.br/
-Author URI: https://www.linknacional.com.br/
-Author: Link Nacional
-Description: Inserir o login do WHMCS no WordPress por shortcode
-Text-Domain: 'link-nacional'
-Version: 1.0.0
+* Plugin Name:WHMCS login
+* Plugin URI: https://www.linknacional.com.br/
+* Author URI: https://www.linknacional.com.br/
+* Author: Link Nacional
+* Description: Inserir o login do WHMCS no WordPress por shortcode
+* Version: 1.1.0
+* License: Apache License 2.0
+* License URI: https://www.apache.org/licenses/LICENSE-2.0
 */
 
 //Check for direct access
@@ -38,7 +39,8 @@ if (!class_exists('login_whmcs_shortcode')) {
 
             wp_enqueue_style('wpvue_vuecss1');
             wp_enqueue_style('wpvue_vuecss2');
-            $return = "<script type='text/javascript'>" .
+            $return = '<!--variaveis para o plugin WHMCS login-->' .
+            "<script type='text/javascript'>" .
             "var login_whmcs_url = '" . get_site_url() . 
             "'; var login_whmcs_content = '" . $content . 
             "'; var login_whmcs_size = '" . $atts['size'] . 
@@ -53,7 +55,7 @@ if (!class_exists('login_whmcs_shortcode')) {
         }
 
         public function list_files_css() {
-            $path = WP_PLUGIN_DIR . '/whmcs-wordpress/dist/spa/css';
+            $path = plugin_dir_path( __FILE__ ) . 'dist/spa/css';
             $diretorio = dir($path);
             $cont = 1;
             while ($arquivo = $diretorio->read()) {
@@ -70,7 +72,7 @@ if (!class_exists('login_whmcs_shortcode')) {
         }
 
         public function list_files_js() {
-            $path = WP_PLUGIN_DIR . '/whmcs-wordpress/dist/spa/js';
+            $path = plugin_dir_path( __FILE__ ) . 'dist/spa/js';
             $diretorio = dir($path);
             $cont = 1;
             while ($arquivo = $diretorio->read()) {

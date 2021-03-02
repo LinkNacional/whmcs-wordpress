@@ -55,9 +55,6 @@ function pageConfig() {
                     </th>
                     <td>
                         <input name="whmcs_login_password_reset" type="text" id="whmcs_login_password_reset" value="<?php echo get_option('whmcs_login_password_reset') ?>" class="regular-text">
-                        <!-- <p class="description" for="whmcs_login_password_reset">
-                            deixar em branco para não aparecer o botão
-                        </p> -->
                     </td>
                 </tr>
                 <tr>
@@ -66,9 +63,6 @@ function pageConfig() {
                     </th>
                     <td>
                         <input name="whmcs_login_register_user" type="text" id="whmcs_login_register_user" value="<?php echo get_option('whmcs_login_register_user') ?>" class="regular-text">
-                        <!-- <p class="description" for="whmcs_login_register_user">
-                            deixar em branco para não aparecer o botão
-                        </p> -->
                     </td>
                 </tr>
             </tbody>
