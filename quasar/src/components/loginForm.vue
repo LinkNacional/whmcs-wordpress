@@ -64,10 +64,10 @@
       <template v-slot:navigation>
         <q-stepper-navigation>
           <div class="row">
-              <q-btn class="col-2 responsive-button" @click="nextStep()" style="color:##0C71C3;min-width:5%" color="primary"  :label="step === 2 ? 'Entrar' : 'Próximo'" />
+              <q-btn class="col-3 responsive-button" @click="nextStep()" style="color:##0C71C3;min-width:5%;max-height: 35px;" color="primary"  :label="step === 2 ? 'Entrar' : 'Próximo'" />
 
-            <div v-if="step == 1" class="col-8 responsive-div"></div>
-            <div v-if="BtnPassword" class="col-6 responsive-div"></div>
+            <div v-if="step == 1" class="col-7 responsive-div"></div>
+            <div v-if="BtnPassword" class="col-5 responsive-div"></div>
 
               <q-btn class="col-2 responsive-button" v-if="step == 1" flat color="primary" v-on:click="redirect_register()" label="Registrar" />
 
