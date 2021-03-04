@@ -1,18 +1,20 @@
 <?php
 /*
-Plugin Name:WHMCS login
-Plugin URI: https://www.linknacional.com.br/
-Author URI: https://www.linknacional.com.br/
-Author: Link Nacional
-Description: Inserir o login do WHMCS no WordPress por shortcode
-Text-Domain: 'link-nacional'
-Version: 1.0.0
+* Plugin Name:WHMCS login
+* Plugin URI: https://www.linknacional.com.br/
+* Author URI: https://www.linknacional.com.br/
+* Author: Link Nacional
+* Description: Insert the WHMCS login in WordPress by shortcode
+* Version: 1.1.0
+* License: Apache License 2.0
+* License URI: https://www.apache.org/licenses/LICENSE-2.0
 */
 
 //Check for direct access
 defined('ABSPATH') or exit('Please Keep Silence');
 include_once 'admin/page_admin.php';
 include_once 'api/whmcs_api.php';
+include_once 'languages/translate.php';
 
 if (!class_exists('login_whmcs_shortcode')) {
     /**
@@ -26,6 +28,12 @@ if (!class_exists('login_whmcs_shortcode')) {
             add_action('wp_enqueue_scripts', [$this, 'func_load_vuescripts']);
             add_shortcode('whmcslogin', [$this, 'login_whmcs_shortcode']);
             add_filter( 'plugin_action_links_whmcs-wordpress/WHMCS-wordpress.php', [__CLASS__, 'plugin_links'] );
+            add_action('init', [$this, 'status_language_init']);
+        }
+
+        public function status_language_init() {
+            $path = basename( dirname( __FILE__ ) ) . '/languages';
+            load_plugin_textdomain( 'whmcswordpress', false, $path);
         }
 
         /// CRIAR O SHORTCODE
@@ -38,12 +46,18 @@ if (!class_exists('login_whmcs_shortcode')) {
 
             wp_enqueue_style('wpvue_vuecss1');
             wp_enqueue_style('wpvue_vuecss2');
-            $return = "<script type='text/javascript'>" .
+            $list_translate = get_texts();
+
+            $return = '<!--variaveis para o plugin WHMCS login-->' .
+            "<script type='text/javascript'>" .
             "var login_whmcs_url = '" . get_site_url() . 
             "'; var login_whmcs_content = '" . $content . 
-            "'; var login_whmcs_size = '" . $atts['size'] . 
-            "'</script>"
-            . "<div id='q-app'></div>";
+            "'; var login_whmcs_size = '" . $atts['size'] . "';";
+
+            foreach ($list_translate as $key => $value) {
+                $return .= ' var ' . $key . "='" . $value . "';";
+            }
+            $return .= '</script>' . "<div id='q-app'></div>";
             return $return;
         }
 
@@ -53,7 +67,7 @@ if (!class_exists('login_whmcs_shortcode')) {
         }
 
         public function list_files_css() {
-            $path = WP_PLUGIN_DIR . '/whmcs-wordpress/dist/spa/css';
+            $path = plugin_dir_path( __FILE__ ) . 'dist/spa/css';
             $diretorio = dir($path);
             $cont = 1;
             while ($arquivo = $diretorio->read()) {
@@ -70,7 +84,7 @@ if (!class_exists('login_whmcs_shortcode')) {
         }
 
         public function list_files_js() {
-            $path = WP_PLUGIN_DIR . '/whmcs-wordpress/dist/spa/js';
+            $path = plugin_dir_path( __FILE__ ) . 'dist/spa/js';
             $diretorio = dir($path);
             $cont = 1;
             while ($arquivo = $diretorio->read()) {

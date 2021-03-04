@@ -1,0 +1,78 @@
+# Copyright (C) 2021 Link Nacional
+# This file is distributed under the same license as the WHMCS login plugin.
+msgid ""
+msgstr ""
+"Project-Id-Version: WHMCS login 1.1.0\n"
+"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/whmcs-wordpress\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"POT-Creation-Date: 2021-03-04T10:51:40-03:00\n"
+"PO-Revision-Date: 2021-03-04 11:22-0300\n"
+"X-Generator: Poedit 2.4.1\n"
+"X-Domain: whmcswordpress\n"
+"Last-Translator: \n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Language: pt_BR\n"
+
+#. Plugin Name of the plugin
+msgid "WHMCS login"
+msgstr ""
+
+#. Plugin URI of the plugin
+#. Author URI of the plugin
+msgid "https://www.linknacional.com.br/"
+msgstr ""
+
+#. Description of the plugin
+msgid "Insert the WHMCS login in WordPress by shortcode"
+msgstr "Insira o login WHMCS no WordPress por shortcode"
+
+#. Author of the plugin
+msgid "Link Nacional"
+msgstr ""
+
+#: languages/translate.php:3
+msgid "Enter the registered email address"
+msgstr "Digite o endereço de e-mail cadastrado"
+
+#: languages/translate.php:4
+msgid "Enter email"
+msgstr "Digite um e-mail"
+
+#: languages/translate.php:5
+msgid "Enter a registered email"
+msgstr "Digite um e-mail cadastrado"
+
+#: languages/translate.php:6
+msgid "There is no user registered with this email"
+msgstr "Não existe nenhum usuário cadastrado com este e-mail"
+
+#: languages/translate.php:7
+msgid "Enter a valid email address"
+msgstr "Digite um e-mail válido"
+
+#: languages/translate.php:9
+msgid "Type the password"
+msgstr "Digite a senha"
+
+#: languages/translate.php:10
+msgid "Enter your password"
+msgstr "Digite sua senha de acesso"
+
+#: languages/translate.php:12
+msgid "Next"
+msgstr "Próximo"
+
+#: languages/translate.php:13
+msgid "Get in"
+msgstr "Entrar"
+
+#: languages/translate.php:14
+msgid "Register"
+msgstr "Registrar"
+
+#: languages/translate.php:15
+msgid "Forgot password?"
+msgstr "Esqueceu a senha?"

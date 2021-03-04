@@ -25,11 +25,11 @@
         v-model="formulario.email"
         ref="email"
         type="email"
-        label="Digite o endereço de e-mail cadastrado"
-        :rules="[ val => val.email !== '' || 'Digite um e-mail',
-        val => val.indexOf('@') !== -1 || 'Digite um e-mail cadastrado',
-        val => errorInput.errorEmail || 'Não existe nenhum usuário cadastrado com este e-mail',
-        val => val.indexOf('@') !== val.length - 1 || 'Digite um e-mail válido']"
+        :label="varsFromWordpress.strings['emailLabel']"
+        :rules="[ val => val.email !== '' || varsFromWordpress.strings['emailErrorNull'],
+        val => val.indexOf('@') !== -1 || varsFromWordpress.strings['emailErrorNotDomain'],
+        val => errorInput.errorEmail || varsFromWordpress.strings['emailErrorNotUser'],
+        val => val.indexOf('@') !== val.length - 1 || varsFromWordpress.strings['emailErrorNotValid']]"
         @keydown.enter.prevent="nextStep"
         lazy-rules="ondemand"
         :loading="loadingState"
@@ -45,11 +45,11 @@
         v-model="formulario.senha"
         filled
         ref="senha"
-        label="Digite a senha"
+        :label="varsFromWordpress.strings['passwordLabel']"
         :type="isPwd ? 'password' : 'text'"
         @keydown.enter.prevent="nextStep"
         autocomplete="off"
-        :rules="[ val => errorInput.errorPassword || 'Digite sua senha de acesso',checkButton]"
+        :rules="[ val => errorInput.errorPassword || varsFromWordpress.strings['passwordError'],checkButton]"
         :loading="loadingState"
         lazy-rules="ondemand" >
         <template v-slot:append>
@@ -64,14 +64,14 @@
       <template v-slot:navigation>
         <q-stepper-navigation>
           <div class="row">
-              <q-btn class="col-3 responsive-button" @click="nextStep()" style="color:##0C71C3;min-width:5%;max-height: 35px;" color="primary"  :label="step === 2 ? 'Entrar' : 'Próximo'" />
+              <q-btn class="col-3 responsive-button" @click="nextStep()" style="color:##0C71C3;min-width:5%;max-height: 35px;" color="primary"  :label="step === 2 ? varsFromWordpress.strings['btnEnter'] : varsFromWordpress.strings['btnNext']" />
 
             <div v-if="step == 1" class="col-7 responsive-div"></div>
             <div v-if="BtnPassword" class="col-5 responsive-div"></div>
 
-              <q-btn class="col-2 responsive-button" v-if="step == 1" flat color="primary" v-on:click="redirect_register()" label="Registrar" />
+              <q-btn class="col-2 responsive-button" v-if="step == 1" flat color="primary" v-on:click="redirect_register()" :label="varsFromWordpress.strings['btnRegister']" />
 
-              <q-btn class="col-4 responsive-button" v-if="BtnPassword" flat v-on:click="redirect_password()" style="color:#E31E17" label="Esqueceu a senha?" />
+              <q-btn class="col-4 responsive-button" v-if="BtnPassword" flat v-on:click="redirect_password()" style="color:#E31E17" :label="varsFromWordpress.strings['btnPassword']" />
           </div>
         </q-stepper-navigation>
       </template>
@@ -81,7 +81,7 @@
 
 <script>
 import { axiosInstance } from 'boot/axios'
-import { textHeader, divSize } from 'boot/vars'
+import { textHeader, divSize, strings } from 'boot/vars'
 
 export default {
   data () {
@@ -103,7 +103,8 @@ export default {
       },
       varsFromWordpress: {
         textHeader: textHeader,
-        divSize: divSize
+        divSize: divSize,
+        strings: strings
       }
     }
   },
