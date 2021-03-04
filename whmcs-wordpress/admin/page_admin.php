@@ -38,27 +38,27 @@ function pageConfig() {
         <table class="form-table" role="presentation">
             <?php wp_nonce_field('save_config_whmcs_login','nonce'); ?>
             <tbody>
-            <h2 class="title">Informações da API do whmcs</h2>
-            <p>As informações da API podem ser conseguidas seguindo o passo a passo <a href="https://docs.whmcs.com/API_Authentication_Credentials#Creating_Admin_API_Authentication_Credentials">aqui</a> </p>
+            <h2 class="title"><?php _e('Whmcs API information','whmcs-wordpress')?></h2>
+            <p><?php _e('API information can be obtained by following the step by step ','whmcs-wordpress')?> <a href="https://docs.whmcs.com/API_Authentication_Credentials#Creating_Admin_API_Authentication_Credentials"><?php _e('here','whmcs-wordpress') ?></a> </p>
                 <tr>
                     <th scope="row">
-                        <label for="whmcs_login_identifier">identificador da API WHMCS</label>
+                        <label for="whmcs_login_identifier"><?php _e('WHMCS API identifier','whmcs-wordpress')?></label>
                     </th>
                     <td>
-                        <input name="whmcs_login_identifier" type="password" id="whmcs_login_identifier" value="<?php echo $id_whmcs ?>" class="regular-text">
+                        <input name="whmcs_login_identifier" type="password" id="whmcs_login_identifier" onfocus="this.value='';" value="<?php echo get_option('whmcs_login_identifier') ?>" class="regular-text">
                     </td>
                 </tr>
                 <tr>
                     <th scope="row">
-                        <label for="whmcs_login_secret">Segredo da API WHMCS</label>
+                        <label for="whmcs_login_secret"><?php _e('WHMCS API secret','whmcs-wordpress')?></label>
                     </th>
                     <td>
-                        <input name="whmcs_login_secret" type="password" id="whmcs_login_secret" value="<?php echo $secret_whmcs ?>" class="regular-text">
+                        <input name="whmcs_login_secret" type="password" id="whmcs_login_secret" onfocus="this.value='';" value="<?php echo get_option('whmcs_login_secret') ?>" class="regular-text">
                     </td>
                 </tr>
                 <tr>
                     <th scope="row">
-                        <label for="whmcs_login_url">url do WHMCS</label>
+                        <label for="whmcs_login_url"><?php _e('WHMCS url','whmcs-wordpress')?></label>
                     </th>
                     <td>
                         <input name="whmcs_login_url" type="text" id="whmcs_login_url" value="<?php echo get_option('whmcs_login_url') ?>" class="regular-text">
@@ -66,7 +66,7 @@ function pageConfig() {
                 </tr>
                 <tr>
                     <th scope="row">
-                        <label for="whmcs_login_password_reset">link para recuperar a senha WHMCS</label>
+                        <label for="whmcs_login_password_reset"><?php _e('link to retrieve the WHMCS password','whmcs-wordpress')?></label>
                     </th>
                     <td>
                         <input name="whmcs_login_password_reset" type="text" id="whmcs_login_password_reset" value="<?php echo get_option('whmcs_login_password_reset') ?>" class="regular-text">
@@ -74,7 +74,7 @@ function pageConfig() {
                 </tr>
                 <tr>
                     <th scope="row">
-                        <label for="whmcs_login_register_user">link para registrar um novo usuario WHMCS</label>
+                        <label for="whmcs_login_register_user"><?php _e('link to register a new WHMCS user','whmcs-wordpress')?></label>
                     </th>
                     <td>
                         <input name="whmcs_login_register_user" type="text" id="whmcs_login_register_user" value="<?php echo get_option('whmcs_login_register_user') ?>" class="regular-text">
@@ -85,7 +85,7 @@ function pageConfig() {
             <?php
     settings_fields( 'whmcs_login' );
     do_settings_sections( 'whmcs_login_session' );
-    submit_button('Salvar alterações', 'textdomain' ); ?>
+    submit_button( __('Save'), 'textdomain' ); ?>
         </form>
     </div>
     <?php
@@ -98,10 +98,10 @@ function configs_submit() {
         }
         update_option('whmcs_login_url',$_POST['whmcs_login_url']);
 
-        if (checkCharacters($_POST['whmcs_login_identifier'])) {
+        if (checkCharacters($_POST['whmcs_login_identifier']) && $_POST['whmcs_login_identifier'] != '') {
             update_option('whmcs_login_identifier',$_POST['whmcs_login_identifier']);
         }
-        if (checkCharacters($_POST['whmcs_login_secret'])) {
+        if (checkCharacters($_POST['whmcs_login_secret']) && $_POST['whmcs_login_secret'] != '') {
             update_option('whmcs_login_secret',$_POST['whmcs_login_secret']);
         }
         update_option('whmcs_login_register_user',$_POST['whmcs_login_register_user']);
