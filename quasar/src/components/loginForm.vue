@@ -118,7 +118,7 @@ export default {
         this.BtnPassword = true
       } else {
         this.loadingState = true
-        axiosInstance.post('', { action: 'ValidateLogin', email: this.formulario.email, senha: this.formulario.senha })
+        axiosInstance.post('', { action: 'ValidateLogin', email: this.formulario.email, senha: this.formulario.senha, idCliente: this.formulario.idCliente })
           .then((response) => {
             if (response.data.result === 'success') {
               this.url = response.data.redirect_url
@@ -157,6 +157,7 @@ export default {
       axiosInstance.post('', { action: 'checkEmail', email: this.formulario.email })
         .then((response) => {
           if (response.data.result === 'success') {
+            this.formulario.idCliente = response.data.clients.client[0].id
             this.$refs.email.validate()
             this.$refs.stepper.next()
             setTimeout(() => {
