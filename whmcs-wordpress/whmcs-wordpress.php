@@ -1,7 +1,6 @@
 <?php
 /*
 * Plugin Name:WHMCS login
-* Plugin URI: https://www.linknacional.com.br/
 * Author URI: https://www.linknacional.com.br/
 * Author: Link Nacional
 * Description: Insert the WHMCS login in WordPress by shortcode
