@@ -65,8 +65,11 @@ if (!class_exists('login_whmcs_shortcode')) {
         }
 
         public function func_load_vuescripts() {
-            $this->list_files_js();
-            $this->list_files_css();
+            global $post;
+            if (has_shortcode( $post->post_content, 'whmcslogin')) {
+                $this->list_files_css();
+                $this->list_files_js();
+            }
         }
 
         public function list_files_css() {
