@@ -1,12 +1,11 @@
 <?php
 /*
 * Plugin Name:WHMCS login
-* Plugin URI: https://www.linknacional.com.br/
 * Author URI: https://www.linknacional.com.br/
 * Author: Link Nacional
 * Description: Insert the WHMCS login in WordPress by shortcode
 * Version: 1.1.0
-* License: Apache License 2.0
+* License: Apache License 2.0 
 * License URI: https://www.apache.org/licenses/LICENSE-2.0
 */
 
@@ -32,7 +31,7 @@ if (!class_exists('login_whmcs_shortcode')) {
         }
 
         /// CRIAR O SHORTCODE
-        public function login_whmcs_shortcode($atts = [], $content = null, $tag = '') {
+        public function login_whmcs_shortcode($atts = null, $content = null, $tag = '') {
             wp_enqueue_script('wpvue_vuejs1');
             wp_enqueue_script('wpvue_vuejs2');
             wp_enqueue_script('wpvue_vuejs3');
@@ -43,11 +42,19 @@ if (!class_exists('login_whmcs_shortcode')) {
             wp_enqueue_style('wpvue_vuecss2');
             $list_translate = get_texts();
 
+            if ($content === null) {
+                $content = '';
+            }
+            if ($atts = null) {
+                $size = '';
+            } else {
+                $size = $atts['size'];
+            }
             $return = '<!--variaveis para o plugin WHMCS login-->' .
             "<script type='text/javascript'>" .
             "var login_whmcs_url = '" . get_site_url() . 
             "'; var login_whmcs_content = '" . $content . 
-            "'; var login_whmcs_size = '" . $atts['size'] . "';";
+            "'; var login_whmcs_size = '" . $size . "';";
 
             foreach ($list_translate as $key => $value) {
                 $return .= ' var ' . $key . "='" . $value . "';";
@@ -57,8 +64,11 @@ if (!class_exists('login_whmcs_shortcode')) {
         }
 
         public function func_load_vuescripts() {
-            $this->list_files_js();
-            $this->list_files_css();
+            global $post;
+            if (has_shortcode( $post->post_content, 'whmcslogin')) {
+                $this->list_files_css();
+                $this->list_files_js();
+            }
         }
 
         public function list_files_css() {

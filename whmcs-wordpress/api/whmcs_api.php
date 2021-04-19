@@ -14,6 +14,18 @@ function login($identifier,$secret,$request) {
     return connect($array);
 }
 
+function resetpassword($identifier,$secret,$request) {
+    $email = $request['email'];
+    $array = [
+        'action' => 'ResetPassword',
+        'username' => $identifier,
+        'password' => $secret,
+        'email' => $email,
+        'responsetype' => 'json',
+    ];
+    return connect($array);
+}
+
 function createToken($identifier,$secret,$user_id,$client_id) {
     $array = [
         'action' => 'CreateSsoToken',
@@ -85,9 +97,17 @@ function post_actions( $request ) {
     }
     //action = checkEmail
     if ($request['action'] == 'checkEmail') {
-        // echo json_encode(searchByEmail($identifier, $secret, $request['email']));
-        $return = json_decode(searchByEmail($identifier, $secret, $request['email']));
+        $email = $request['email'];
+        $return = json_decode(searchByEmail($identifier, $secret,$email ));
         if ($return->totalresults >= 1) {
+            foreach ($return->clients->client as  $elementKey => $element) {
+                if ($element->email != $email) {
+                    unset($return->clients->client[$elementKey]);
+                } else {
+                    unset($return->clients->client[$elementKey]);
+                    $return->clients->client[0] = $element;
+                }
+            }
             echo json_encode($return);
         } else {
             echo '{"result":"notin"}';
@@ -99,6 +119,17 @@ function post_actions( $request ) {
         $url_password = get_option('whmcs_login_password_reset');
         $url_register = get_option('whmcs_login_register_user');
         echo json_encode(['password' => $url_password, 'register' => $url_register]);
+    }
+
+    if ($request['action'] == 'resetpassword') {
+        $request = (json_decode(file_get_contents('php://input'), true));
+        $identifier = get_option('whmcs_login_identifier');
+        $secret = get_option('whmcs_login_secret');
+        echo resetpassword($identifier,$secret,$request);
+
+        if ($request['action'] == 'ValidateLogin') {
+            $resLogin = resetpassword($identifier,$secret,$request);
+        }
     }
 }
 
