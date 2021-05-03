@@ -126,10 +126,6 @@ function post_actions( $request ) {
         $identifier = get_option('whmcs_login_identifier');
         $secret = get_option('whmcs_login_secret');
         echo resetpassword($identifier,$secret,$request);
-
-        if ($request['action'] == 'ValidateLogin') {
-            $resLogin = resetpassword($identifier,$secret,$request);
-        }
     }
 }
 
