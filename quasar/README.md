@@ -1,10 +1,11 @@
-# Quasar App (readme)
+# Quasar App (whmcs-wordpress)
 
-A Quasar Framework app
-
+A Quasar Project
 
 ## Install the dependencies
 ```bash
+yarn
+# or
 npm install
 ```
 
@@ -13,10 +14,15 @@ npm install
 quasar dev
 ```
 
+
 ### Lint the files
 ```bash
+yarn lint
+# or
 npm run lint
 ```
+
+
 
 ### Build the app for production
 ```bash
@@ -24,8 +30,4 @@ quasar build
 ```
 
 ### Customize the configuration
-See [Configuring quasar.conf.js](https://quasar.dev/quasar-cli/quasar-conf-js).
-
-## Modificar o caminho para login
-em **src/boot/axios.js** você pode mudar o caminho para o login
-e em seguida pode usar o comando **quasar build** para compilar sua modificação.Para aplicar essa modificação copie a pasta **/dist**, subistiua a da versão da branch **build** e atualize os nomes dos arquivos .js em **dist/js** no arquivo **/index.php**
+See [Configuring quasar.config.js](https://v2.quasar.dev/quasar-cli-webpack/quasar-config-js).
