@@ -40,6 +40,15 @@ class Whmcs_Wordpress_Admin {
     private $version;
 
     /**
+     * The options name to be used in this plugin
+     *
+     * @since  	1.0.0
+     * @access 	private
+     * @var  	string 		$option_name 	Option name of this plugin
+    */
+    private $option_name = 'whmcs_wordpress_setting';
+
+    /**
      * Initialize the class and set its properties.
      *
      * @since    1.0.0
@@ -49,6 +58,8 @@ class Whmcs_Wordpress_Admin {
     public function __construct($plugin_name, $version) {
         $this->plugin_name = $plugin_name;
         $this->version = $version;
+
+        $this->register_settings();
     }
 
     /**
@@ -57,19 +68,6 @@ class Whmcs_Wordpress_Admin {
      * @since    1.0.0
      */
     public function enqueue_styles() {
-
-        /**
-         * This function is provided for demonstration purposes only.
-         *
-         * An instance of this class should be passed to the run() function
-         * defined in Whmcs_Wordpress_Loader as all of the hooks are defined
-         * in that particular class.
-         *
-         * The Whmcs_Wordpress_Loader will then create the relationship
-         * between the defined hooks and the functions defined in this
-         * class.
-         */
-
         wp_enqueue_style($this->plugin_name, plugin_dir_url(__FILE__) . 'css/whmcs-wordpress-admin.css', [], $this->version, 'all');
     }
 
@@ -79,19 +77,152 @@ class Whmcs_Wordpress_Admin {
      * @since    1.0.0
      */
     public function enqueue_scripts() {
-
-        /**
-         * This function is provided for demonstration purposes only.
-         *
-         * An instance of this class should be passed to the run() function
-         * defined in Whmcs_Wordpress_Loader as all of the hooks are defined
-         * in that particular class.
-         *
-         * The Whmcs_Wordpress_Loader will then create the relationship
-         * between the defined hooks and the functions defined in this
-         * class.
-         */
-
         wp_enqueue_script($this->plugin_name, plugin_dir_url(__FILE__) . 'js/whmcs-wordpress-admin.js', ['jquery'], $this->version, false);
+    }
+
+    public function register_settings() {
+        add_action('admin_menu', [$this, 'whmcs_wordpress_add_admin_menu']);
+        add_action('admin_init', [$this, 'whmcs_wordpress_settings_init']);
+    }
+
+    public function whmcs_wordpress_add_admin_menu() {
+        add_submenu_page(
+            'options-general.php',
+            'WHMCS Login',
+            'WHMCS Login',
+            'manage_options',
+            'whmcs_wordpress',
+            [$this, 'whmcs_wordpress_settings_page']
+        );
+    }
+
+    public function whmcs_wordpress_settings_init() {
+        add_settings_section(
+            $this->option_name . '_general',
+            __('WHMCS API settings', 'whmcs-wordpress'),
+            [$this, 'whmcs_wordpress_api_settings_section_callback'],
+            $this->plugin_name,
+        );
+
+        add_settings_field(
+            $this->option_name . '_whmcs_login_url',
+            __('WHMCS url', 'whmcs-wordpress'),
+            [$this, 'whmcs_login_url_setting_callback'],
+            $this->plugin_name,
+            $this->option_name . '_general',
+        );
+
+        add_settings_field(
+            $this->option_name . '_whmcs_api_identifier',
+            __('WHMCS API identifier', 'whmcs-wordpress'),
+            [$this, 'whmcs_login_identifier_setting_callback'],
+            $this->plugin_name,
+            $this->option_name . '_general',
+        );
+
+        add_settings_field(
+            $this->option_name . '_whmcs_api_secret',
+            __('WHMCS API secret', 'whmcs-wordpress'),
+            [$this, 'whmcs_login_secret_setting_callback'],
+            $this->plugin_name,
+            $this->option_name . '_general',
+        );
+
+        add_settings_field(
+            $this->option_name . '_register_user_url',
+            __('User registration link', 'whmcs-wordpress'),
+            [$this, 'whmcs_register_user_url_setting_callback'],
+            $this->plugin_name,
+            $this->option_name . '_general',
+        );
+
+        register_setting($this->plugin_name, $this->option_name . '_whmcs_api_identifier');
+        register_setting($this->plugin_name, $this->option_name . '_whmcs_api_secret');
+        register_setting($this->plugin_name, $this->option_name . '_whmcs_login_url');
+        register_setting($this->plugin_name, $this->option_name . '_register_user_url');
+    }
+
+    public function whmcs_wordpress_settings_page() {
+        ?>
+            <form action='options.php' method='post'>
+                <h2>WHMCS WordPress</h2>
+                <?php
+        settings_fields($this->plugin_name);
+        do_settings_sections($this->plugin_name);
+        submit_button(); ?>
+            </form>
+            <?php
+    }
+
+    public function whmcs_wordpress_api_settings_section_callback() {
+        // echo __('API Credentials', 'whmcs-wordpress');
+    }
+
+    public function whmcs_login_identifier_setting_callback() {
+        $name = $this->option_name . '_whmcs_api_identifier';
+        $value = get_option($name);
+
+        echo <<<EOT
+            <input
+            class="whmcs-wordpress-input"
+            type="password"
+            autocomplete="off"
+            name="$name"
+            value="$value"
+            required
+            maxlength="255"
+            >
+        EOT;
+    }
+
+    public function whmcs_login_secret_setting_callback() {
+        $name = $this->option_name . '_whmcs_api_secret';
+        $value = get_option($name);
+
+        echo <<<EOT
+            <input
+            class="whmcs-wordpress-input"
+            type="password"
+            autocomplete="off"
+            name="$name"
+            value="$value"
+            required
+            maxlength="255"
+            >
+        EOT;
+    }
+
+    public function whmcs_login_url_setting_callback() {
+        $name = $this->option_name . '_whmcs_login_url';
+        $value = get_option($name);
+
+        echo <<<EOT
+            <input
+            class="whmcs-wordpress-input"
+            type="url"
+            autocomplete="off"
+            name="$name"
+            value="$value"
+            required
+            maxlength="255"
+            >
+        EOT;
+    }
+
+    public function whmcs_register_user_url_setting_callback() {
+        $name = $this->option_name . '_register_user_url';
+        $value = get_option($name);
+
+        echo <<<EOT
+            <input
+            class="whmcs-wordpress-input"
+            type="url"
+            autocomplete="off"
+            name="$name"
+            value="$value"
+            required
+            maxlength="255"
+            >
+        EOT;
     }
 }

@@ -77,6 +77,8 @@ class Whmcs_Wordpress {
         $this->set_locale();
         $this->define_admin_hooks();
         $this->define_public_hooks();
+
+        add_filter('plugin_action_links_' . $this->plugin_name . '/' . $this->plugin_name . '.php', [$this, 'plugin_links']);
     }
 
     /**
@@ -164,6 +166,12 @@ class Whmcs_Wordpress {
 
         $this->loader->add_action('wp_enqueue_scripts', $plugin_public, 'enqueue_styles');
         $this->loader->add_action('wp_enqueue_scripts', $plugin_public, 'enqueue_scripts');
+    }
+
+    public function plugin_links($links) {
+        $links[] = '<a href="' . 'options-general.php?page=whmcs_wordpress' . '">' . __('Settings', 'whmcs-wordpress') . '</a>';
+
+        return $links;
     }
 
     /**
