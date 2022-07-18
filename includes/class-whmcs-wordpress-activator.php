@@ -21,16 +21,13 @@
  * @author     Bruno Ferreira <ferreira.bruno@linknacional.com>
  */
 class Whmcs_Wordpress_Activator {
-
-	/**
-	 * Short Description. (use period)
-	 *
-	 * Long Description.
-	 *
-	 * @since    1.0.0
-	 */
-	public static function activate() {
-
-	}
-
+    /**
+     * Short Description. (use period)
+     *
+     * Long Description.
+     *
+     * @since    1.0.0
+     */
+    public static function activate() {
+    }
 }
