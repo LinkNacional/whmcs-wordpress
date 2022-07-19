@@ -55,16 +55,68 @@ class Whmcs_Wordpress_Whmcs_Services {
         return wp_remote_post($this->whmcs_url, $request);
     }
 
-    public function validateLogin($email, $password) {
-        $response = $this->connect(
-            'ValidateLogin',
-            [
-                'email' => $email,
-                'password2' => $password
-            ]
-        );
+    private function is_success_response($response) {
+        return isset($response['result']) && $response['result'] === 'success';
+    }
 
-        $responseBody = wp_remote_retrieve_body($response);
+    /**
+     * @param  string $email
+     * @param  string $password
+     *
+     * @return void
+     */
+    public function validate_login($email, $password) {
+        $response = $this->connect('ValidateLogin', ['email' => $email, 'password2' => $password]);
+
+        $response = json_decode(wp_remote_retrieve_body($response), true);
+
+        if ($this->is_success_response($response)) {
+            return ['userId' => $response['userid']];
+        } else {
+            return new WP_Error('api_error');
+        }
+    }
+
+    public function create_sso_tokenn($userId, $clientId) {
+        $requestBody = [
+            'destination' => 'sso:custom_redirect',
+            'sso_redirect_path' => 'index.php?rp=/user/accounts',
+        ];
+
+        if ($clientId === null) {
+            $requestBody['user_id'] = $userId;
+        } else {
+            $requestBody['client_id'] = $clientId;
+        }
+
+        $response = $this->connect('CreateSsoToken', $requestBody);
+        $response = json_decode(wp_remote_retrieve_body($response), true);
+
+        if ($this->is_success_response($response)) {
+            return ['redirectUrl' => $response['redirect_url']];
+        } else {
+            return new WP_Error('api_error');
+        }
+    }
+
+    public function get_client_id_of_email($email) {
+        $getClients = $this->connect('GetClients', ['search' => $email]);
+
+        if (is_wp_error($getClients)) {
+            return new WP_Error('api_error');
+        }
+
+        $response = json_decode(wp_remote_retrieve_body($getClients), true);
+
+        if (
+            isset($response['result']) &&
+            $response['result'] === 'success' &&
+            $response['totalresults'] >= 1
+        ) {
+            return $response['clients']['client'][0]['id'];
+        } else {
+            return null;
+        }
     }
 
     public function is_email_registered($email) {

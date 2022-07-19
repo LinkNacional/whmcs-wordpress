@@ -34,16 +34,27 @@
         <q-input
           v-model="password"
           label="Senha"
+          type="password"
+          :rules="[
+            val => !errors.enableWrongPassword || translations.passwordError
+          ]"
         />
       </q-step>
 
       <template #navigation>
-        <q-stepper-navigation>
+        <q-stepper-navigation class="flex justify-between">
           <q-btn
             color="primary"
             :label="step === 2 ? 'Entrar' : 'Continuar'"
             :loading="isNextBtnLoading"
             @click="nextStep()"
+          />
+          <q-btn
+            v-if="showForgetPasswdBtn"
+            flat
+            style="color: #e31e17"
+            :label="translations.labelBtnForgetPasswd"
+            @click="requestResetPassword()"
           />
         </q-stepper-navigation>
       </template>
@@ -62,7 +73,7 @@ export default defineComponent({
 
   setup () {
     return {
-      step: ref(1)
+      step: ref(2)
     }
   },
 
@@ -71,9 +82,11 @@ export default defineComponent({
       email: 'ferreira.bruno@linknacional.com',
       password: String(),
       isNextBtnLoading: false,
+      showForgetPasswdBtn: true,
 
       errors: {
-        enableEmailNotRegistered: false
+        enableEmailNotRegistered: false,
+        enableWrongPassword: false
       },
       translations
     }
@@ -143,15 +156,21 @@ export default defineComponent({
         password: this.password
       }
 
+      this.isNextBtnLoading = true
+
       api.post('/v1/login', requestBody)
         .then(res => {
-          //
+          if (res.data.success) {
+            window.location.href = res.data.redirectUrl
+          } else {
+            this.showForgetPasswdBtn = true
+          }
         })
         .catch(() => {
           //
         })
         .finally(() => {
-          //
+          this.isNextBtnLoading = false
         })
     },
 

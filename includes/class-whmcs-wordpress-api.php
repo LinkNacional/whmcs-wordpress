@@ -78,8 +78,32 @@ class Whmcs_Wordpress_Api {
     /**
      * @return void
      */
-    public function login() {
-        //
+    public function login(WP_REST_Request $request) {
+        $email = $request->get_param('email');
+        $password = $request->get_param('password');
+
+        $validatedLogin = $this->whmcsService->validate_login($email, $password);
+
+        if (is_wp_error($validatedLogin)) {
+            return new WP_REST_Response(['success' => false]);
+        } else {
+            $clientId = $this->whmcsService->get_client_id_of_email($email);
+
+            if (is_wp_error($clientId)) {
+                return new WP_REST_Response(['success' => false]);
+            } else {
+                $ssoToken = $this->whmcsService->create_sso_tokenn($validatedLogin['userId'], $clientId);
+
+                if (is_wp_error($ssoToken)) {
+                    return new WP_REST_Response(['success' => false]);
+                } else {
+                    return new WP_REST_Response([
+                        'success' => true,
+                        'redirectUrl' => $ssoToken['redirectUrl']
+                    ]);
+                }
+            }
+        }
     }
 
     /**
