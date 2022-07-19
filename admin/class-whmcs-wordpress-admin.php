@@ -105,9 +105,9 @@ class Whmcs_Wordpress_Admin {
         );
 
         add_settings_field(
-            $this->option_name . '_whmcs_login_url',
+            $this->option_name . '_whmcs_url',
             __('WHMCS url', 'whmcs-wordpress'),
-            [$this, 'whmcs_login_url_setting_callback'],
+            [$this, 'whmcs_url_setting_callback'],
             $this->plugin_name,
             $this->option_name . '_general',
         );
@@ -138,7 +138,7 @@ class Whmcs_Wordpress_Admin {
 
         register_setting($this->plugin_name, $this->option_name . '_whmcs_api_identifier');
         register_setting($this->plugin_name, $this->option_name . '_whmcs_api_secret');
-        register_setting($this->plugin_name, $this->option_name . '_whmcs_login_url');
+        register_setting($this->plugin_name, $this->option_name . '_whmcs_url');
         register_setting($this->plugin_name, $this->option_name . '_register_user_url');
     }
 
@@ -192,8 +192,8 @@ class Whmcs_Wordpress_Admin {
         EOT;
     }
 
-    public function whmcs_login_url_setting_callback() {
-        $name = $this->option_name . '_whmcs_login_url';
+    public function whmcs_url_setting_callback() {
+        $name = $this->option_name . '_whmcs_url';
         $value = get_option($name);
 
         echo <<<EOT

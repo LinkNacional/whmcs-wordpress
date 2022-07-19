@@ -41,6 +41,15 @@ class Whmcs_Wordpress_Loader {
     protected $filters;
 
     /**
+     * The array of shortcodes registered with WordPress.
+     *
+     * @since    1.0.0
+     * @access   protected
+     * @var      array    $endpoints
+     */
+    protected $endpoints;
+
+    /**
      * Initialize the collections used to maintain the actions and filters.
      *
      * @since    1.0.0
@@ -48,6 +57,7 @@ class Whmcs_Wordpress_Loader {
     public function __construct() {
         $this->actions = [];
         $this->filters = [];
+        $this->endpoints = [];
     }
 
     /**
@@ -76,6 +86,23 @@ class Whmcs_Wordpress_Loader {
      */
     public function add_filter($hook, $component, $callback, $priority = 10, $accepted_args = 1) {
         $this->filters = $this->add($this->filters, $hook, $component, $callback, $priority, $accepted_args);
+    }
+
+    /**
+     * @param  string $namespace
+     * @param  string $route
+     * @param  string $method
+     * @param  callable $callback
+     *
+     * @return void
+     */
+    public function add_endpoint($namespace, $route, $method, $callback) {
+        $this->endpoints[] = [
+            'namespace' => $namespace,
+            'route' => $route,
+            'method' => $method,
+            'callback' => $callback,
+        ];
     }
 
     /**
@@ -116,6 +143,19 @@ class Whmcs_Wordpress_Loader {
 
         foreach ($this->actions as $hook) {
             add_action($hook['hook'], [$hook['component'], $hook['callback']], $hook['priority'], $hook['accepted_args']);
+        }
+
+        foreach ($this->endpoints as $endpoint) {
+            add_action('rest_api_init', function () use ($endpoint) {
+                register_rest_route(
+                    $endpoint['namespace'],
+                    $endpoint['route'],
+                    [
+                        'methods' => $endpoint['method'],
+                        'callback' => $endpoint['callback'],
+                    ]
+                );
+            });
         }
     }
 }

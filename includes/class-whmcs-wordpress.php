@@ -77,6 +77,7 @@ class Whmcs_Wordpress {
         $this->set_locale();
         $this->define_admin_hooks();
         $this->define_public_hooks();
+        $this->define_api_endpoints();
 
         add_filter('plugin_action_links_' . $this->plugin_name . '/' . $this->plugin_name . '.php', [$this, 'plugin_links']);
     }
@@ -122,6 +123,10 @@ class Whmcs_Wordpress {
          */
         require_once plugin_dir_path(dirname(__FILE__)) . 'public/class-whmcs-wordpress-public.php';
 
+        require_once plugin_dir_path(dirname(__FILE__)) . 'includes/whmcs/class-whmcs-wordpress-whmcs-services.php';
+
+        require_once plugin_dir_path(dirname(__FILE__)) . 'includes/class-whmcs-wordpress-api.php';
+
         $this->loader = new Whmcs_Wordpress_Loader();
     }
 
@@ -166,6 +171,10 @@ class Whmcs_Wordpress {
 
         $this->loader->add_action('wp_enqueue_scripts', $plugin_public, 'enqueue_styles');
         $this->loader->add_action('wp_enqueue_scripts', $plugin_public, 'enqueue_scripts');
+    }
+
+    private function define_api_endpoints() {
+        new Whmcs_Wordpress_Api($this->plugin_name, $this->loader, new Whmcs_Wordpress_Whmcs_Services());
     }
 
     public function plugin_links($links) {
