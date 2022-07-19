@@ -1,1 +1,9 @@
 // app global css in SCSS form
+
+.q-stepper__header {
+  display: none !important;
+}
+
+.scroll {
+  overflow: hidden !important;
+}
