@@ -20,32 +20,116 @@ class Whmcs_Wordpress_Whmcs_Services {
     private $whmcs_url;
 
     public function __construct() {
+        $whmcsUrl = ltrim(get_option('whmcs_wordpress_setting_whmcs_url'), '/');
+
+        $this->whmcs_url = $whmcsUrl . '/includes/api.php';
+
         $this->api_identifier = get_option('whmcs_wordpress_setting_whmcs_api_identifier');
         $this->api_secret = get_option('whmcs_wordpress_setting_whmcs_api_secret');
-        $this->whmcs_url = get_option('whmcs_wordpress_setting_whmcs_url');
     }
 
     /**
      * Auth into the WHMCS API and executes the request.
      *
-     * @param  string $resource - WHMCS API resource without starting slash.
+     * @param  string $action
      * @param  array $body
      * @param  string $httpMethod
      *
      * @see https://developers.whmcs.com/api/authentication/
      *
-     * @return void
+     * @return array|WP_Error
      */
-    private function connect($resource, $body, $httpMethod = 'POST') {
-        $request = array_merge($body, [
+    private function connect($action, $body, $httpMethod = 'POST') {
+        $request = [
             'body' => [
+                'action' => $action,
                 'username' => $this->api_identifier,
                 'password' => $this->api_secret,
                 'responsetype' => 'json',
             ],
             'method' => $httpMethod
-        ]);
+        ];
 
-        return wp_remote_post($this->whmcs_url . $resource, $request);
+        $request['body'] = array_merge($request['body'], $body);
+
+        return wp_remote_post($this->whmcs_url, $request);
+    }
+
+    public function validateLogin($email, $password) {
+        $response = $this->connect(
+            'ValidateLogin',
+            [
+                'email' => $email,
+                'password2' => $password
+            ]
+        );
+
+        $responseBody = wp_remote_retrieve_body($response);
+    }
+
+    public function is_email_registered($email) {
+        $emailExistsForClient = $this->client_email_exists($email);
+
+        if (is_wp_error($emailExistsForClient)) {
+            return false;
+        } else {
+            if ($emailExistsForClient) {
+                return true;
+            } else {
+                $emailExistsForUser = $this->user_email_exists($email);
+
+                return is_wp_error($emailExistsForUser) ? false : $emailExistsForUser;
+            }
+        }
+    }
+
+    /**
+     * @param  string $email
+     *
+     * @return bool|\WP_Error
+     */
+    private function client_email_exists($email) {
+        $getClients = $this->connect('GetClients', ['search' => $email]);
+
+        if (!is_wp_error($getClients)) {
+            $response = json_decode(wp_remote_retrieve_body($getClients), true);
+
+            if (
+                isset($response['result']) &&
+                $response['result'] === 'success' &&
+                $response['totalresults'] >= 1
+            ) {
+                return true;
+            } else {
+                return false;
+            }
+        } else {
+            return new WP_Error('api_error');
+        }
+    }
+
+    /**
+     * @param  string $email
+     *
+     * @return bool|\WP_Error
+     */
+    private function user_email_exists($email) {
+        $getUsers = $this->connect('GetUsers', ['search' => $email]);
+
+        if (!is_wp_error($getUsers)) {
+            $response = json_decode(wp_remote_retrieve_body($getUsers), true);
+
+            if (
+                isset($response['result']) &&
+                $response['result'] === 'success' &&
+                $response['totalresults'] >= 1
+            ) {
+                return true;
+            } else {
+                return false;
+            }
+        } else {
+            return new WP_Error('api_error');
+        }
     }
 }

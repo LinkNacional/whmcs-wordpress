@@ -55,22 +55,22 @@ class Whmcs_Wordpress_Api {
     public function register_routes() {
         $this->loader->add_endpoint(
             $this->namespace,
-            '',
-            'GET',
+            'login',
+            'POST',
             [$this, 'login']
         );
 
         $this->loader->add_endpoint(
             $this->namespace,
             '/email/is-registered',
-            'GET',
+            'POST',
             [$this, 'is_email_registered']
         );
 
         $this->loader->add_endpoint(
             $this->namespace,
             '/password/reset',
-            'GET',
+            'POST',
             [$this, 'reset_password']
         );
     }
@@ -85,8 +85,12 @@ class Whmcs_Wordpress_Api {
     /**
      * @return void
      */
-    public function is_email_registered() {
-        //
+    public function is_email_registered(WP_REST_Request $request) {
+        $email = $request->get_param('email');
+
+        $emailIsRegistered = $this->whmcsService->is_email_registered($email);
+
+        return new WP_REST_Response(['isRegistered' => $emailIsRegistered]);
     }
 
     /**

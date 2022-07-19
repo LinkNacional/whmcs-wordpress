@@ -16,7 +16,10 @@
         <q-input
           ref="email"
           v-model="email"
-          :rules="[validateEmail]"
+          :rules="[
+            val => validateEmail,
+            val => !errors.enableEmailNotRegistered || translations.enableEmailNotRegistered
+          ]"
           label="E-mail"
           type="email"
         />
@@ -39,6 +42,7 @@
           <q-btn
             color="primary"
             :label="step === 2 ? 'Entrar' : 'Continuar'"
+            :loading="isNextBtnLoading"
             @click="nextStep()"
           />
         </q-stepper-navigation>
@@ -50,6 +54,8 @@
 <script>
 import { defineComponent, ref } from 'vue'
 import { validateEmail, requiredField } from '../utils/validators'
+import { api } from '../boot/axios'
+import translations from 'src/boot/translations'
 
 export default defineComponent({
   name: 'WhmcsLoginForm',
@@ -62,8 +68,14 @@ export default defineComponent({
 
   data () {
     return {
-      email: String(),
-      password: String()
+      email: 'ferreira.bruno@linknacional.com',
+      password: String(),
+      isNextBtnLoading: false,
+
+      errors: {
+        enableEmailNotRegistered: false
+      },
+      translations
     }
   },
 
@@ -75,7 +87,7 @@ export default defineComponent({
             console.log(this.$refs.email.validate())
             return false
           } else {
-            this.isEmailRegisteredInWHMCS()
+            this.requestIsEmailRegistered()
           }
           break
 
@@ -86,12 +98,61 @@ export default defineComponent({
           }
           break
       }
-
-      this.step++
     },
 
-    isEmailRegisteredInWHMCS () {
-      //
+    requestIsEmailRegistered () {
+      const requestBody = { email: this.email }
+
+      this.isNextBtnLoading = true
+
+      api.post('/v1/email/is-registered', requestBody)
+        .then(res => {
+          if (res.data.isRegistered) {
+            this.$refs.stepper.next()
+          } else {
+            this.errors.enableEmailNotRegistered = true
+            this.$refs.email.validate()
+          }
+        })
+        .catch(() => {
+          //
+        })
+        .finally(() => {
+          this.isNextBtnLoading = false
+        })
+    },
+
+    requestResetPassword () {
+      const requestBody = { email: this.email }
+
+      api.post('/v1/password/reset', requestBody)
+        .then(res => {
+        //
+        })
+        .catch(() => {
+        //
+        })
+        .finally(() => {
+        //
+        })
+    },
+
+    requestLogin () {
+      const requestBody = {
+        email: this.email,
+        password: this.password
+      }
+
+      api.post('/v1/login', requestBody)
+        .then(res => {
+          //
+        })
+        .catch(() => {
+          //
+        })
+        .finally(() => {
+          //
+        })
     },
 
     validateEmail,
