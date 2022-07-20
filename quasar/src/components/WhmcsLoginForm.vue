@@ -52,6 +52,16 @@
             :loading="isNextBtnLoading"
             @click="nextStep()"
           />
+
+          <q-btn
+            v-if="step === 1"
+            color="primary"
+            label="Registrar"
+            :href="whmcsRegistrationUrl"
+            flat
+            target="_blank"
+          />
+
           <q-btn
             v-if="showResetPasswdBtn"
             flat
@@ -71,6 +81,9 @@ import { defineComponent, ref } from 'vue'
 import { LocalStorage, Notify } from 'quasar'
 import { validateEmail, requiredField } from '../utils/validators'
 import { api } from '../boot/axios'
+
+// eslint-disable-next-line camelcase
+// const whmcs_wordpress_registration_url = 'https://whmcs.linknacional.com.br/register.php'
 
 export default defineComponent({
   name: 'WhmcsLoginForm',
@@ -93,7 +106,10 @@ export default defineComponent({
         enableEmailNotRegistered: false,
         enableWrongPassword: false
       },
-      timeBetweenRequestingPasswdReset: 5000 // TODO: set to five minutes.
+      timeBetweenRequestingPasswdReset: 300000, // 5 minutes
+
+      // eslint-disable-next-line camelcase, no-undef
+      whmcsRegistrationUrl: whmcs_wordpress_registration_url
     }
   },
 
