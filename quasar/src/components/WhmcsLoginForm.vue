@@ -50,10 +50,11 @@
             @click="nextStep()"
           />
           <q-btn
-            v-if="showForgetPasswdBtn"
+            v-if="showResetPasswdBtn"
             flat
             style="color: #e31e17"
             :label="translations.labelBtnForgetPasswd"
+            :loading="isResetPasswdBtnLoading"
             @click="requestResetPassword()"
           />
         </q-stepper-navigation>
@@ -64,6 +65,7 @@
 
 <script>
 import { defineComponent, ref } from 'vue'
+import { LocalStorage, Notify } from 'quasar'
 import { validateEmail, requiredField } from '../utils/validators'
 import { api } from '../boot/axios'
 import translations from 'src/boot/translations'
@@ -82,13 +84,15 @@ export default defineComponent({
       email: 'ferreira.bruno@linknacional.com',
       password: String(),
       isNextBtnLoading: false,
-      showForgetPasswdBtn: true,
+      showResetPasswdBtn: true,
+      isResetPasswdBtnLoading: false,
 
       errors: {
         enableEmailNotRegistered: false,
         enableWrongPassword: false
       },
-      translations
+      translations,
+      timeBetweenRequestingPasswdReset: 5000 // TODO: set to five minutes.
     }
   },
 
@@ -136,18 +140,34 @@ export default defineComponent({
     },
 
     requestResetPassword () {
-      const requestBody = { email: this.email }
+      const lastPasswdResetTime = LocalStorage.getItem('lastPasswdResetTime') ?? null
+      const currentTime = new Date().getTime()
 
-      api.post('/v1/password/reset', requestBody)
-        .then(res => {
-        //
+      const passedInternal = currentTime - lastPasswdResetTime >= this.timeBetweenRequestingPasswdReset
+
+      if (passedInternal) {
+        this.isResetPasswdBtnLoading = true
+
+        const requestBody = { email: this.email }
+
+        api.post('/v1/password/reset', requestBody)
+          .then(res => {
+            if (res.data.success) {
+              LocalStorage.set('lastPasswdResetTime', new Date().getTime())
+            }
+          })
+          .catch(() => {
+            //
+          })
+          .finally(() => {
+            this.isResetPasswdBtnLoading = false
+          })
+      } else {
+        Notify.create({
+          type: 'warning',
+          message: 'Aguarde 5 minutos para solicitar novamente.'
         })
-        .catch(() => {
-        //
-        })
-        .finally(() => {
-        //
-        })
+      }
     },
 
     requestLogin () {
@@ -163,7 +183,7 @@ export default defineComponent({
           if (res.data.success) {
             window.location.href = res.data.redirectUrl
           } else {
-            this.showForgetPasswdBtn = true
+            this.showResetPasswdBtn = true
           }
         })
         .catch(() => {

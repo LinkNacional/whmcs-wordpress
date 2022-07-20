@@ -117,10 +117,11 @@ class Whmcs_Wordpress_Api {
         return new WP_REST_Response(['isRegistered' => $emailIsRegistered]);
     }
 
-    /**
-     * @return void
-     */
-    public function reset_password() {
-        //
+    public function reset_password(WP_REST_Request $request) {
+        $email = $request->get_param('email');
+
+        $success = $this->whmcsService->reset_password($email);
+
+        return new WP_REST_Response(['success' => $success]);
     }
 }

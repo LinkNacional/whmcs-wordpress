@@ -55,6 +55,11 @@ class Whmcs_Wordpress_Whmcs_Services {
         return wp_remote_post($this->whmcs_url, $request);
     }
 
+    /**
+     * @param  array $response
+     *
+     * @return bool
+     */
     private function is_success_response($response) {
         return isset($response['result']) && $response['result'] === 'success';
     }
@@ -180,6 +185,18 @@ class Whmcs_Wordpress_Whmcs_Services {
             } else {
                 return false;
             }
+        } else {
+            return new WP_Error('api_error');
+        }
+    }
+
+    public function reset_password($email) {
+        $response = $this->connect('ResetPassword', ['email' => $email]);
+
+        if (!is_wp_error($response)) {
+            $response = json_decode(wp_remote_retrieve_body($response), true);
+
+            return $this->is_success_response($response);
         } else {
             return new WP_Error('api_error');
         }
