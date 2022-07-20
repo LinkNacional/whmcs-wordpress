@@ -94,4 +94,39 @@ class Whmcs_Wordpress_Public {
 
         wp_enqueue_script($this->plugin_name, plugin_dir_url(__FILE__) . 'js/whmcs-wordpress-public.js', ['jquery'], $this->version, false);
     }
+
+    public function shortcode_whmcs_wordpress() {
+        $buildDir = __DIR__ . '/form';
+
+        $cssFiles = scandir("$buildDir/css");
+        $jsFiles = scandir("$buildDir/js");
+        $fontFiles = scandir("$buildDir/fonts");
+        $buildFiles = array_merge($cssFiles, $jsFiles, $fontFiles);
+
+        $files = array_filter($buildFiles, function ($file) {
+            return $file !== '.' && $file !== '..';
+        });
+
+        array_map(function ($file) {
+            $posDotBeforeExt = strripos($file, '.');
+            $fileExt = substr($file, $posDotBeforeExt + 1);
+
+            switch ($fileExt) {
+                case 'js':
+                    wp_enqueue_script(uniqid(), plugin_dir_url(__FILE__) . "form/js/$file");
+
+                    break;
+                case 'css':
+                    wp_enqueue_style(uniqid(), plugin_dir_url(__FILE__) . "form/css/$file");
+
+                    break;
+                case 'woff':
+                case 'woff2':
+                    # code...
+                    break;
+            }
+        }, $files);
+
+        return '<div id="q-app"></div>';
+    }
 }
