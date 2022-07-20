@@ -159,8 +159,11 @@ class Whmcs_Wordpress_Admin {
     }
 
     public function whmcs_login_identifier_setting_callback() {
+        $oldName = 'whmcs_login_identifier';
+        $oldValue = get_option($oldName, '');
+
         $name = $this->option_name . '_whmcs_api_identifier';
-        $value = get_option($name);
+        $value = get_option($name, $oldValue);
 
         echo <<<EOT
             <input
@@ -176,8 +179,11 @@ class Whmcs_Wordpress_Admin {
     }
 
     public function whmcs_login_secret_setting_callback() {
+        $oldName = 'whmcs_login_secret';
+        $oldValue = get_option($oldName, '');
+
         $name = $this->option_name . '_whmcs_api_secret';
-        $value = get_option($name);
+        $value = get_option($name, $oldValue);
 
         echo <<<EOT
             <input
@@ -193,8 +199,11 @@ class Whmcs_Wordpress_Admin {
     }
 
     public function whmcs_url_setting_callback() {
+        $oldName = 'whmcs_login_url';
+        $oldValue = get_option($oldName, '');
+
         $name = $this->option_name . '_whmcs_url';
-        $value = get_option($name);
+        $value = get_option($name, $oldValue);
 
         echo <<<EOT
             <input
@@ -210,8 +219,11 @@ class Whmcs_Wordpress_Admin {
     }
 
     public function whmcs_register_user_url_setting_callback() {
+        $oldName = 'whmcs_login_register_user';
+        $oldValue = get_option($oldName, '');
+
         $name = $this->option_name . '_register_user_url';
-        $value = get_option($name);
+        $value = get_option($name, $oldValue);
 
         echo <<<EOT
             <input
