@@ -26,6 +26,19 @@
  */
 
 // If uninstall not called from WordPress, then exit.
-if ( ! defined( 'WP_UNINSTALL_PLUGIN' ) ) {
-	exit;
+if (!defined('WP_UNINSTALL_PLUGIN')) {
+    exit;
 }
+
+delete_option('whmcs_wordpress_setting_whmcs_api_identifier');
+delete_option('whmcs_wordpress_setting_whmcs_api_secret');
+delete_option('whmcs_wordpress_setting_whmcs_url');
+delete_option('whmcs_wordpress_setting_register_user_url');
+
+delete_option('whmcs_login_url');
+delete_option('whmcs_login_identifier');
+delete_option('whmcs_login_secret');
+delete_option('whmcs_login_register_user');
+delete_option('whmcs_login_password_reset');
+
+remove_shortcode('whmcslogin');
