@@ -217,6 +217,7 @@ export default defineComponent({
           } else {
             this.showResetPasswdBtn = true
             this.triggerPasswdError()
+            this.isNextBtnLoading = false
           }
         })
         .catch(() => {
@@ -225,9 +226,10 @@ export default defineComponent({
             'Não foi possível efetuar o login.',
             'Tente novamente mais tarde.'
           )
+          this.isNextBtnLoading = false
         })
         .finally(() => {
-          this.isNextBtnLoading = false
+          //
         })
     },
 
