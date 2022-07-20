@@ -79,7 +79,7 @@ class Whmcs_Wordpress_Api {
      * @return void
      */
     public function login(WP_REST_Request $request) {
-        $email = $request->get_param('email');
+        $email = sanitize_email($request->get_param('email'));
         $password = $request->get_param('password');
 
         $validatedLogin = $this->whmcsService->validate_login($email, $password);
@@ -110,7 +110,7 @@ class Whmcs_Wordpress_Api {
      * @return void
      */
     public function is_email_registered(WP_REST_Request $request) {
-        $email = $request->get_param('email');
+        $email = sanitize_email($request->get_param('email'));
 
         if ($email === '') {
             return new WP_REST_Response(['success' => false]);
@@ -122,7 +122,7 @@ class Whmcs_Wordpress_Api {
     }
 
     public function reset_password(WP_REST_Request $request) {
-        $email = $request->get_param('email');
+        $email = sanitize_email($request->get_param('email'));
 
         $success = $this->whmcsService->reset_password($email);
 
