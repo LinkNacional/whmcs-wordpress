@@ -36,13 +36,21 @@
           ref="password"
           v-model="password"
           label="Senha"
-          type="password"
+          :type="showPasswdFieldContent ? 'password' : 'text'"
           :rules="[
             val => requiredField(val) || 'Digite sua senha de acesso',
             val => !errors.enableWrongPassword || 'Senha inválida'
           ]"
           input-class="whmcs-wordpress-form-input"
-        />
+        >
+          <template #append>
+            <q-icon
+              :name="showPasswdFieldContent ? 'visibility_off' : 'visibility'"
+              class="cursor-pointer"
+              @click="showPasswdFieldContent = !showPasswdFieldContent"
+            />
+          </template>
+        </q-input>
       </q-step>
 
       <template #navigation>
@@ -103,6 +111,7 @@ export default defineComponent({
       isNextBtnLoading: false,
       showResetPasswdBtn: false,
       isResetPasswdBtnLoading: false,
+      showPasswdFieldContent: true,
 
       errors: {
         enableEmailNotRegistered: false,
