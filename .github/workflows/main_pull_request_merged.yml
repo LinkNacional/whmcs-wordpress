@@ -1,0 +1,59 @@
+name: Generate new release for plugin
+
+on:
+  pull_request:
+    types: [closed]
+    branches: [main]
+
+env:
+  PLUGIN_NAME: whmcs-wordpress
+
+jobs:
+  release-build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 16
+
+      - name: Install Quasar
+        working-directory: ./quasar
+        run: npm ci
+
+      - name: Build with Quasar
+        working-directory: ./quasar
+        run: npm run build
+
+      # - name: Move quasar build to public
+      # run: "cd quasar/dist/spa && mv -t ./public/build"
+
+      - name: Make plugin root directory
+        run: "mkdir $PLUGIN_NAME && mv -t ./$PLUGIN_NAME ./includes ./public ./admin *.php && ls -lah"
+
+      - name: Archive Release
+        uses: thedoctor0/zip-release@master
+        with:
+          type: "zip"
+          path: "${{ env.PLUGIN_NAME }}"
+          directory: "."
+          filename: "${{ env.PLUGIN_NAME }}.zip"
+          exclusions: "*.git* /*node_modules/* .editorconfig"
+
+      - name: Bump version and push tag
+        id: tag_version
+        uses: mathieudutour/github-tag-action@v6.0
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Generate new Release
+        uses: ncipollo/release-action@v1
+        with:
+          artifacts: "${{ env.PLUGIN_NAME }}.zip"
+          token: ${{ secrets.GITHUB_TOKEN }}
+          commit: "main"
+          draft: "true"
+          tag: ${{ steps.tag_version.outputs.new_tag }}
+          name: Release ${{ steps.tag_version.outputs.new_tag }}
