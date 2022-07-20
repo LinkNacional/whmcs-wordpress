@@ -39,7 +39,7 @@
           type="password"
           :rules="[
             val => requiredField(val) || 'Digite sua senha de acesso',
-            val => !errors.enableWrongPassword || 'Digite sua senha de acesso'
+            val => !errors.enableWrongPassword || 'Senha inválida'
           ]"
           input-class="whmcs-wordpress-form-input"
         />
