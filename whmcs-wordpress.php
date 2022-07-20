@@ -15,9 +15,9 @@
  * @wordpress-plugin
  * Plugin Name:       WHMCS WordPress
  * Plugin URI:        https://github.com/LinkNacional/whmcs-wordpress
- * Description:       This is a short description of what the plugin does. It's displayed in the WordPress admin area.
+ * Description:       Shortcode para login automático no WHMCS.
  * Version:           1.0.0
- * Author:            Bruno Ferreira
+ * Author:            Link Nacional
  * Author URI:        https://www.linknacional.com.br/
  * License:           GPL-2.0+
  * License URI:       http://www.gnu.org/licenses/gpl-2.0.txt
