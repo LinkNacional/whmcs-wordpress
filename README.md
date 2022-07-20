@@ -3,7 +3,7 @@
 ## Funções
 - Botão para ir para a página de cadastro do WHMCS.
 - Botão para envio de e-mail para recuperação de senha.
-- Login automático no WHMCS.
+- Login automático no WHMCS. 
 
 ## Modo de instalação
 1. Baixe o .zip a última release do plugin no GitHub.
