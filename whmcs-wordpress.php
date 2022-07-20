@@ -1,117 +1,80 @@
 <?php
-/*
-* Plugin Name:WHMCS login
-* Author URI: https://www.linknacional.com.br/
-* Author: Link Nacional
-* Description: Insert the WHMCS login in WordPress by shortcode
-* Version: 1.1.0
-* License: Apache License 2.0 
-* License URI: https://www.apache.org/licenses/LICENSE-2.0
-*/
 
-//Check for direct access
-defined('ABSPATH') or exit('Please Keep Silence');
-include_once 'admin/page_admin.php';
-include_once 'api/whmcs_api.php';
-include_once 'languages/translate.php';
+/**
+ * The plugin bootstrap file
+ *
+ * This file is read by WordPress to generate the plugin information in the plugin
+ * admin area. This file also includes all of the dependencies used by the plugin,
+ * registers the activation and deactivation functions, and defines a function
+ * that starts the plugin.
+ *
+ * @link              https://www.linknacional.com.br/
+ * @since             1.0.0
+ * @package           Whmcs_Wordpress
+ *
+ * @wordpress-plugin
+ * Plugin Name:       WHMCS WordPress
+ * Plugin URI:        https://github.com/LinkNacional/whmcs-wordpress
+ * Description:       Shortcode para login automático no WHMCS.
+ * Version:           1.0.0
+ * Author:            Link Nacional
+ * Author URI:        https://www.linknacional.com.br/
+ * License:           GPL-2.0+
+ * License URI:       http://www.gnu.org/licenses/gpl-2.0.txt
+ * Text Domain:       whmcs-wordpress
+ * Domain Path:       /languages
+ */
 
-if (!class_exists('login_whmcs_shortcode')) {
-    /**
-     * @author João Victor
-     */
-    class Wp_login_screen_whmcs {
-        public $namesCss = [];
-        public $namesJs = [];
-
-        public function __construct() {
-            add_action('wp_enqueue_scripts', [$this, 'func_load_vuescripts']);
-            add_shortcode('whmcslogin', [$this, 'login_whmcs_shortcode']);
-            add_filter( 'plugin_action_links_whmcs-wordpress/whmcs-wordpress.php', [$this, 'plugin_links'] );
-            add_action('init', [$this, 'status_language_init']);
-        }
-
-        /// CRIAR O SHORTCODE
-        public function login_whmcs_shortcode($atts = null, $content = null, $tag = '') {
-            wp_enqueue_script('wpvue_vuejs1');
-            wp_enqueue_script('wpvue_vuejs2');
-            wp_enqueue_script('wpvue_vuejs3');
-            wp_enqueue_script('wpvue_vuejs4');
-            wp_enqueue_script('wpvue_vuejs5');
-
-            wp_enqueue_style('wpvue_vuecss1');
-            wp_enqueue_style('wpvue_vuecss2');
-            $list_translate = get_texts();
-
-            if ($content === null) {
-                $content = '';
-            }
-            if ($atts = null) {
-                $size = '';
-            } else {
-                $size = $atts['size'];
-            }
-            $return = '<!--variaveis para o plugin WHMCS login-->' .
-            "<script type='text/javascript'>" .
-            "var login_whmcs_url = '" . get_site_url() . 
-            "'; var login_whmcs_content = '" . $content . 
-            "'; var login_whmcs_size = '" . $size . "';";
-
-            foreach ($list_translate as $key => $value) {
-                $return .= ' var ' . $key . "='" . $value . "';";
-            }
-            $return .= '</script>' . "<div id='q-app'></div>";
-            return $return;
-        }
-
-        public function func_load_vuescripts() {
-            global $post;
-            if (has_shortcode( $post->post_content, 'whmcslogin')) {
-                $this->list_files_css();
-                $this->list_files_js();
-            }
-        }
-
-        public function list_files_css() {
-            $path = plugin_dir_path( __FILE__ ) . 'dist/spa/css';
-            $diretorio = dir($path);
-            $cont = 1;
-            while ($arquivo = $diretorio->read()) {
-                if ($arquivo != '..' && $arquivo != '.') {
-                    if (!in_array($arquivo, $this->namesCss)) {
-                        wp_enqueue_style('wpvue_vuecss' . $cont, plugin_dir_url(__FILE__) . 'dist/spa/css/' . $arquivo,true);
-                        $this->namesCss[] = $arquivo;
-                        $cont++;
-                    }
-                }
-            }
-            $diretorio->close();
-            return true;
-        }
-
-        public function list_files_js() {
-            $path = plugin_dir_path( __FILE__ ) . 'dist/spa/js';
-            $diretorio = dir($path);
-            $cont = 1;
-            while ($arquivo = $diretorio->read()) {
-                if ($arquivo != '..' && $arquivo != '.') {
-                    wp_register_script('wpvue_vuejs' . $cont, plugin_dir_url(__FILE__) . 'dist/spa/js/' . $arquivo,true);
-                    $this->namesJs[] = $arquivo;
-                    $cont++;
-                }
-            }
-            $diretorio->close();
-            return true;
-        }
-
-        public static function plugin_links( $links ) {
-            $links[] = '<a href="' . admin_url( 'options-general.php?page=Login_whmcs' ) . '">' . __('Settings', 'whmcs-wordpress' ) . '</a>';
-            return $links;
-        }
-
-        public function status_language_init() {
-            $path = basename( dirname( __FILE__ ) ) . '/languages';
-            load_plugin_textdomain( 'whmcs-wordpress', false, $path);
-        }
-    }
+// If this file is called directly, abort.
+if (!defined('WPINC')) {
+    die;
 }
-$matinalInit = new Wp_login_screen_whmcs();
+
+/**
+ * Currently plugin version.
+ * Start at version 1.0.0 and use SemVer - https://semver.org
+ * Rename this for your plugin and update it as you release new versions.
+ */
+define('WHMCS_WORDPRESS_VERSION', '1.0.0');
+
+/**
+ * The code that runs during plugin activation.
+ * This action is documented in includes/class-whmcs-wordpress-activator.php
+ */
+function activate_whmcs_wordpress() {
+    require_once plugin_dir_path(__FILE__) . 'includes/class-whmcs-wordpress-activator.php';
+    Whmcs_Wordpress_Activator::activate();
+}
+
+/**
+ * The code that runs during plugin deactivation.
+ * This action is documented in includes/class-whmcs-wordpress-deactivator.php
+ */
+function deactivate_whmcs_wordpress() {
+    require_once plugin_dir_path(__FILE__) . 'includes/class-whmcs-wordpress-deactivator.php';
+    Whmcs_Wordpress_Deactivator::deactivate();
+}
+
+register_activation_hook(__FILE__, 'activate_whmcs_wordpress');
+register_deactivation_hook(__FILE__, 'deactivate_whmcs_wordpress');
+
+/**
+ * The core plugin class that is used to define internationalization,
+ * admin-specific hooks, and public-facing site hooks.
+ */
+require plugin_dir_path(__FILE__) . 'includes/class-whmcs-wordpress.php';
+
+/**
+ * Begins execution of the plugin.
+ *
+ * Since everything within the plugin is registered via hooks,
+ * then kicking off the plugin from this point in the file does
+ * not affect the page life cycle.
+ *
+ * @since    1.0.0
+ */
+function run_whmcs_wordpress() {
+    $plugin = new Whmcs_Wordpress();
+    $plugin->run();
+}
+run_whmcs_wordpress();
