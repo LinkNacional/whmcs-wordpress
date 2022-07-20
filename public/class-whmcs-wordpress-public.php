@@ -95,7 +95,7 @@ class Whmcs_Wordpress_Public {
         wp_enqueue_script($this->plugin_name, plugin_dir_url(__FILE__) . 'js/whmcs-wordpress-public.js', ['jquery'], $this->version, false);
     }
 
-    public function shortcode_whmcs_wordpress() {
+    public function shortcode_whmcs_wordpress($atts = [], $content = null) {
         $buildDir = __DIR__ . '/form';
 
         $cssFiles = scandir("$buildDir/css");
@@ -127,6 +127,15 @@ class Whmcs_Wordpress_Public {
             }
         }, $files);
 
-        return '<div id="q-app"></div>';
+        $whmcsUrl = get_option('whmcs_wordpress_setting_whmcs_url');
+        $whmcsRegistrationUrl = get_option('whmcs_wordpress_setting_register_user_url');
+
+        return <<<HTML
+            <script type="text/javascript">
+                const whmcs_wordpress_whmcs_url = $whmcsUrl
+                const whmcs_wordpress_registration_url = $whmcsRegistrationUrl
+            </script>
+            <div id="q-app"></div>
+        HTML;
     }
 }
