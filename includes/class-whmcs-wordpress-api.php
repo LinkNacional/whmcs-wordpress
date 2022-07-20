@@ -112,6 +112,10 @@ class Whmcs_Wordpress_Api {
     public function is_email_registered(WP_REST_Request $request) {
         $email = $request->get_param('email');
 
+        if ($email === '') {
+            return new WP_REST_Response(['success' => false]);
+        }
+
         $emailIsRegistered = $this->whmcsService->is_email_registered($email);
 
         return new WP_REST_Response(['isRegistered' => $emailIsRegistered]);
