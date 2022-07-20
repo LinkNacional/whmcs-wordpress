@@ -1,9 +1,8 @@
 /dist
 /src-bex/www
-/src/boot/axios.js
-/src/boot/vars.js
 /src-capacitor
 /src-cordova
 /.quasar
 /node_modules
-quasar.conf.js
+.eslintrc.js
+babel.config.js

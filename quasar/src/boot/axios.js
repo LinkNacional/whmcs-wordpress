@@ -1,8 +1,12 @@
+/* eslint-disable camelcase */
 import axios from 'axios'
-var url = login_whmcs_url
 
-const axiosInstance = axios.create({
-    baseURL: url + '/wp-json/login-whmcs/v1/login/',
-    timeout: 90000
-  })
-export { axiosInstance }
+// const whmcs_wordpress_api_url = 'https://dev.criarsite.online/dev_bruno/wordpress/wp-json/whmcs-wordpress'
+
+export const api = axios.create({
+  // eslint-disable-next-line no-undef
+  baseURL: whmcs_wordpress_api_url,
+  headers: {
+    'Content-Type': 'application/json'
+  }
+})

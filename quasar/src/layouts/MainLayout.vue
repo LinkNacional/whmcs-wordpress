@@ -1,19 +1,16 @@
 <template>
-  <q-layout view="hHh lpR fFf">
-    <q-page-container>
-      <transition name="slide">
-        <router-view />
-      </transition>
-    </q-page-container>
-  </q-layout>
+  <WhmcsLoginForm />
 </template>
+
 <script>
-export default {
+import { defineComponent } from 'vue'
+import WhmcsLoginForm from 'src/components/WhmcsLoginForm.vue'
+
+export default defineComponent({
   name: 'MainLayout',
-  components: { },
-  data () {
-    return {
-    }
+
+  components: {
+    WhmcsLoginForm
   }
-}
+})
 </script>
