@@ -127,13 +127,13 @@ class Whmcs_Wordpress_Public {
             }
         }, $files);
 
-        $whmcsUrl = get_option('whmcs_wordpress_setting_whmcs_url');
+        $apiUrl = get_site_url(null, 'wp-json/' . $this->plugin_name);
         $whmcsRegistrationUrl = get_option('whmcs_wordpress_setting_register_user_url');
 
         return <<<HTML
             <script type="text/javascript">
-                const whmcs_wordpress_whmcs_url = $whmcsUrl
-                const whmcs_wordpress_registration_url = $whmcsRegistrationUrl
+                const whmcs_wordpress_api_url = '$apiUrl'
+                const whmcs_wordpress_registration_url = '$whmcsRegistrationUrl'
             </script>
             <div id="q-app"></div>
         HTML;

@@ -7,6 +7,7 @@
       ref="stepper"
       v-model="step"
       animated
+      flat
     >
       <q-step
         :name="1"
@@ -68,6 +69,7 @@
             style="color: #e31e17"
             label="Esqueceu a senha?"
             :loading="isResetPasswdBtnLoading"
+            class="whmcs-wordpress-register-btn"
             @click="requestResetPassword()"
           />
         </q-stepper-navigation>
@@ -109,7 +111,7 @@ export default defineComponent({
       timeBetweenRequestingPasswdReset: 300000, // 5 minutes
 
       // eslint-disable-next-line camelcase, no-undef
-      whmcsRegistrationUrl: whmcs_wordpress_registration_url
+      whmcsRegistrationUrl: whmcs_wordpress_registration_url ?? ''
     }
   },
 
