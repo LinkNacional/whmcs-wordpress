@@ -22,6 +22,7 @@
           ]"
           label="E-mail"
           type="email"
+          input-class="whmcs-wordpress-form-input"
         />
       </q-step>
 
@@ -38,6 +39,7 @@
           :rules="[
             val => !errors.enableWrongPassword || translations.passwordError
           ]"
+          input-class="whmcs-wordpress-form-input"
         />
       </q-step>
 
@@ -75,16 +77,16 @@ export default defineComponent({
 
   setup () {
     return {
-      step: ref(2)
+      step: ref(1)
     }
   },
 
   data () {
     return {
-      email: 'ferreira.bruno@linknacional.com',
-      password: String(),
+      email: '',
+      password: '',
       isNextBtnLoading: false,
-      showResetPasswdBtn: true,
+      showResetPasswdBtn: false,
       isResetPasswdBtnLoading: false,
 
       errors: {
@@ -98,22 +100,14 @@ export default defineComponent({
 
   methods: {
     nextStep () {
-      switch (this.step) {
-        case 1:
-          if (!this.$refs.email.validate()) {
-            console.log(this.$refs.email.validate())
-            return false
-          } else {
-            this.requestIsEmailRegistered()
-          }
-          break
-
-        case 2:
-          if (!this.$refs.password.validate()) {
-            console.log(this.$refs.password.validate())
-            return false
-          }
-          break
+      if (this.step === 1) {
+        if (!this.$refs.email.validate()) {
+          return false
+        } else {
+          this.requestIsEmailRegistered()
+        }
+      } else {
+        this.requestLogin()
       }
     },
 
