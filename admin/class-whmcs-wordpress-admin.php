@@ -99,14 +99,14 @@ class Whmcs_Wordpress_Admin {
     public function whmcs_wordpress_settings_init() {
         add_settings_section(
             $this->option_name . '_general',
-            __('WHMCS API settings', 'whmcs-wordpress'),
+            'Configurações da API do WHMCS',
             [$this, 'whmcs_wordpress_api_settings_section_callback'],
             $this->plugin_name,
         );
 
         add_settings_field(
             $this->option_name . '_whmcs_url',
-            __('WHMCS url', 'whmcs-wordpress'),
+            'URL do WHMCS',
             [$this, 'whmcs_url_setting_callback'],
             $this->plugin_name,
             $this->option_name . '_general',
@@ -114,7 +114,7 @@ class Whmcs_Wordpress_Admin {
 
         add_settings_field(
             $this->option_name . '_whmcs_api_identifier',
-            __('WHMCS API identifier', 'whmcs-wordpress'),
+            'Identifier da API do WHMCS',
             [$this, 'whmcs_login_identifier_setting_callback'],
             $this->plugin_name,
             $this->option_name . '_general',
@@ -122,7 +122,7 @@ class Whmcs_Wordpress_Admin {
 
         add_settings_field(
             $this->option_name . '_whmcs_api_secret',
-            __('WHMCS API secret', 'whmcs-wordpress'),
+            'Secret da API do WHMCS',
             [$this, 'whmcs_login_secret_setting_callback'],
             $this->plugin_name,
             $this->option_name . '_general',
@@ -130,7 +130,7 @@ class Whmcs_Wordpress_Admin {
 
         add_settings_field(
             $this->option_name . '_register_user_url',
-            __('User registration link', 'whmcs-wordpress'),
+            'Link para cadastro de usuários',
             [$this, 'whmcs_register_user_url_setting_callback'],
             $this->plugin_name,
             $this->option_name . '_general',
@@ -155,7 +155,7 @@ class Whmcs_Wordpress_Admin {
     }
 
     public function whmcs_wordpress_api_settings_section_callback() {
-        // echo __('API Credentials', 'whmcs-wordpress');
+        // echo 'Credenciais da API';
     }
 
     public function whmcs_login_identifier_setting_callback() {

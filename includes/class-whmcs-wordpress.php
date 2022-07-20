@@ -74,7 +74,6 @@ class Whmcs_Wordpress {
         $this->plugin_name = 'whmcs-wordpress';
 
         $this->load_dependencies();
-        $this->set_locale();
         $this->define_admin_hooks();
         $this->define_public_hooks();
         $this->define_api_endpoints();
@@ -88,7 +87,6 @@ class Whmcs_Wordpress {
      * Include the following files that make up the plugin:
      *
      * - Whmcs_Wordpress_Loader. Orchestrates the hooks of the plugin.
-     * - Whmcs_Wordpress_i18n. Defines internationalization functionality.
      * - Whmcs_Wordpress_Admin. Defines all hooks for the admin area.
      * - Whmcs_Wordpress_Public. Defines all hooks for the public side of the site.
      *
@@ -107,12 +105,6 @@ class Whmcs_Wordpress {
         require_once plugin_dir_path(dirname(__FILE__)) . 'includes/class-whmcs-wordpress-loader.php';
 
         /**
-         * The class responsible for defining internationalization functionality
-         * of the plugin.
-         */
-        require_once plugin_dir_path(dirname(__FILE__)) . 'includes/class-whmcs-wordpress-i18n.php';
-
-        /**
          * The class responsible for defining all actions that occur in the admin area.
          */
         require_once plugin_dir_path(dirname(__FILE__)) . 'admin/class-whmcs-wordpress-admin.php';
@@ -128,21 +120,6 @@ class Whmcs_Wordpress {
         require_once plugin_dir_path(dirname(__FILE__)) . 'includes/class-whmcs-wordpress-api.php';
 
         $this->loader = new Whmcs_Wordpress_Loader();
-    }
-
-    /**
-     * Define the locale for this plugin for internationalization.
-     *
-     * Uses the Whmcs_Wordpress_i18n class in order to set the domain and to register the hook
-     * with WordPress.
-     *
-     * @since    1.0.0
-     * @access   private
-     */
-    private function set_locale() {
-        $plugin_i18n = new Whmcs_Wordpress_i18n();
-
-        $this->loader->add_action('plugins_loaded', $plugin_i18n, 'load_plugin_textdomain');
     }
 
     /**
@@ -180,7 +157,7 @@ class Whmcs_Wordpress {
     }
 
     public function plugin_links($links) {
-        $links[] = '<a href="' . 'options-general.php?page=whmcs_wordpress' . '">' . __('Settings', 'whmcs-wordpress') . '</a>';
+        $links[] = '<a href="' . 'options-general.php?page=whmcs_wordpress' . '">Configurações</a>';
 
         return $links;
     }
