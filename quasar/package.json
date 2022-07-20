@@ -1,8 +1,8 @@
 {
   "name": "whmcs-wordpress",
-  "version": "0.0.1",
-  "description": "A Quasar Project",
-  "productName": "Quasar App",
+  "version": "2.0.0",
+  "description": "Shortcode para login automático no WHMCS.",
+  "productName": "WHMCS WordPress",
   "author": "Bruno Ferreira <ferreira.bruno@linknacional.com>",
   "private": true,
   "scripts": {
