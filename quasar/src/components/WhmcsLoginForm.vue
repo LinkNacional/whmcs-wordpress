@@ -17,8 +17,8 @@
           ref="email"
           v-model="email"
           :rules="[
-            val => validateEmail,
-            val => !errors.enableEmailNotRegistered || translations.enableEmailNotRegistered
+            val => validateEmail(val),
+            val => !errors.enableEmailNotRegistered || 'Não existe usuário registrado com esse e-mail'
           ]"
           label="E-mail"
           type="email"
@@ -27,17 +27,18 @@
       </q-step>
 
       <q-step
-        ref="password"
         :name="2"
         title="Senha"
         :done="step > 2"
       >
         <q-input
+          ref="password"
           v-model="password"
           label="Senha"
           type="password"
           :rules="[
-            val => !errors.enableWrongPassword || translations.passwordError
+            val => requiredField(val) || 'Digite sua senha de acesso',
+            val => !errors.enableWrongPassword || 'Digite sua senha de acesso'
           ]"
           input-class="whmcs-wordpress-form-input"
         />
@@ -55,7 +56,7 @@
             v-if="showResetPasswdBtn"
             flat
             style="color: #e31e17"
-            :label="translations.labelBtnForgetPasswd"
+            label="Esqueceu a senha?"
             :loading="isResetPasswdBtnLoading"
             @click="requestResetPassword()"
           />
@@ -70,7 +71,6 @@ import { defineComponent, ref } from 'vue'
 import { LocalStorage, Notify } from 'quasar'
 import { validateEmail, requiredField } from '../utils/validators'
 import { api } from '../boot/axios'
-import translations from 'src/boot/translations'
 
 export default defineComponent({
   name: 'WhmcsLoginForm',
@@ -93,7 +93,6 @@ export default defineComponent({
         enableEmailNotRegistered: false,
         enableWrongPassword: false
       },
-      translations,
       timeBetweenRequestingPasswdReset: 5000 // TODO: set to five minutes.
     }
   },
@@ -103,10 +102,14 @@ export default defineComponent({
       if (this.step === 1) {
         if (!this.$refs.email.validate()) {
           return false
-        } else {
-          this.requestIsEmailRegistered()
         }
+
+        this.requestIsEmailRegistered()
       } else {
+        if (!this.$refs.password.validate()) {
+          return false
+        }
+
         this.requestLogin()
       }
     },
@@ -123,10 +126,15 @@ export default defineComponent({
           } else {
             this.errors.enableEmailNotRegistered = true
             this.$refs.email.validate()
+            this.errors.enableEmailNotRegistered = false
           }
         })
         .catch(() => {
-          //
+          this.notify(
+            'negative',
+            'Não foi possível verificar o e-mail digitado.',
+            'Tente novamente mais tarde.'
+          )
         })
         .finally(() => {
           this.isNextBtnLoading = false
@@ -134,12 +142,7 @@ export default defineComponent({
     },
 
     requestResetPassword () {
-      const lastPasswdResetTime = LocalStorage.getItem('lastPasswdResetTime') ?? null
-      const currentTime = new Date().getTime()
-
-      const passedInternal = currentTime - lastPasswdResetTime >= this.timeBetweenRequestingPasswdReset
-
-      if (passedInternal) {
+      if (this.isTimeBetweenRequestingPasswdResetDone()) {
         this.isResetPasswdBtnLoading = true
 
         const requestBody = { email: this.email }
@@ -148,19 +151,36 @@ export default defineComponent({
           .then(res => {
             if (res.data.success) {
               LocalStorage.set('lastPasswdResetTime', new Date().getTime())
+
+              this.notify(
+                'positive',
+                'E-mail de recuperação enviado.',
+                'Verifique a caixa de entrada do seu e-mail.'
+              )
+            } else {
+              this.notify(
+                'negative',
+                'E-mail de recuperação não enviado.',
+                'Verifique se seu e-mail digitado está correto.'
+              )
             }
           })
           .catch(() => {
-            //
+            this.notify(
+              'negative',
+              'E-mail de recuperação não enviado.',
+              'Aguarde um momento e tente novamente.'
+            )
           })
           .finally(() => {
             this.isResetPasswdBtnLoading = false
           })
       } else {
-        Notify.create({
-          type: 'warning',
-          message: 'Aguarde 5 minutos para solicitar novamente.'
-        })
+        this.notify(
+          'warning',
+          'E-mail de recuperação não enviado.',
+          'Aguarde 5 minutos para solicitar novamente.'
+        )
       }
     },
 
@@ -178,14 +198,41 @@ export default defineComponent({
             window.location.href = res.data.redirectUrl
           } else {
             this.showResetPasswdBtn = true
+            this.triggerPasswdError()
           }
         })
         .catch(() => {
-          //
+          this.notify(
+            'negative',
+            'Não foi possível efetuar o login.',
+            'Tente novamente mais tarde.'
+          )
         })
         .finally(() => {
           this.isNextBtnLoading = false
         })
+    },
+
+    isTimeBetweenRequestingPasswdResetDone () {
+      const lastPasswdResetTime = LocalStorage.getItem('lastPasswdResetTime') ?? null
+      const currentTime = new Date().getTime()
+
+      return currentTime - lastPasswdResetTime >= this.timeBetweenRequestingPasswdReset
+    },
+
+    triggerPasswdError () {
+      this.errors.enableWrongPassword = true
+      this.$refs.password.validate()
+      this.errors.enableWrongPassword = false
+    },
+
+    notify (type, msg, caption = null) {
+      Notify.create({
+        type,
+        position: 'top',
+        message: msg,
+        caption
+      })
     },
 
     validateEmail,
