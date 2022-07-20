@@ -69,7 +69,7 @@ class Whmcs_Wordpress {
         if (defined('WHMCS_WORDPRESS_VERSION')) {
             $this->version = WHMCS_WORDPRESS_VERSION;
         } else {
-            $this->version = '1.0.0';
+            $this->version = '2.0.0';
         }
         $this->plugin_name = 'whmcs-wordpress';
 

@@ -82,7 +82,7 @@ class Whmcs_Wordpress_Whmcs_Services {
         }
     }
 
-    public function create_sso_tokenn($userId, $clientId) {
+    public function create_sso_token($userId, $clientId) {
         $requestBody = [
             'destination' => 'sso:custom_redirect',
             'sso_redirect_path' => 'index.php?rp=/user/accounts',

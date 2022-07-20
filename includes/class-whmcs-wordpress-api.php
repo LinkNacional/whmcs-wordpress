@@ -92,7 +92,7 @@ class Whmcs_Wordpress_Api {
             if (is_wp_error($clientId)) {
                 return new WP_REST_Response(['success' => false]);
             } else {
-                $ssoToken = $this->whmcsService->create_sso_tokenn($validatedLogin['userId'], $clientId);
+                $ssoToken = $this->whmcsService->create_sso_token($validatedLogin['userId'], $clientId);
 
                 if (is_wp_error($ssoToken)) {
                     return new WP_REST_Response(['success' => false]);
