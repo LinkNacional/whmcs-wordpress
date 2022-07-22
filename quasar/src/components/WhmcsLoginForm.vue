@@ -1,8 +1,5 @@
 <template>
-  <div
-    class="q-pa-md"
-    style="max-width: 500px;"
-  >
+  <div style="max-width: 500px;">
     <q-stepper
       ref="stepper"
       v-model="step"
