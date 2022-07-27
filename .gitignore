@@ -1,1 +1,6 @@
 /_wordpress-source
+/public/form/css/*
+/public/form/js/*
+/public/form/fonts/*
+/public/form/index.html
+/public/form/iframe.html

@@ -219,7 +219,8 @@ export default defineComponent({
       api.post('/v1/login', requestBody)
         .then(res => {
           if (res.data.success) {
-            window.location.href = res.data.redirectUrl
+            // See for "window.parent": https://developer.mozilla.org/en-US/docs/Web/HTML/Element/iframe#scripting
+            window.parent.location.href = res.data.redirectUrl
           } else {
             this.showResetPasswdBtn = true
             this.triggerPasswdError()
@@ -257,7 +258,9 @@ export default defineComponent({
         type,
         position: 'top',
         message: msg,
-        caption
+        caption,
+        progress: true,
+        timeout: 2500
       })
     },
 
