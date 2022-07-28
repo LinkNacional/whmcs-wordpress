@@ -5,6 +5,7 @@
       v-model="step"
       animated
       flat
+      @keypress.enter="nextStep()"
     >
       <q-step
         :name="1"
