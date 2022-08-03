@@ -74,7 +74,6 @@ class Whmcs_Wordpress {
         $this->plugin_name = 'whmcs-wordpress';
 
         $this->load_dependencies();
-        $this->define_admin_hooks();
         $this->define_public_hooks();
         $this->define_api_endpoints();
 
@@ -120,20 +119,6 @@ class Whmcs_Wordpress {
         require_once plugin_dir_path(dirname(__FILE__)) . 'includes/class-whmcs-wordpress-api.php';
 
         $this->loader = new Whmcs_Wordpress_Loader();
-    }
-
-    /**
-     * Register all of the hooks related to the admin area functionality
-     * of the plugin.
-     *
-     * @since    1.0.0
-     * @access   private
-     */
-    private function define_admin_hooks() {
-        $plugin_admin = new Whmcs_Wordpress_Admin($this->get_plugin_name(), $this->get_version());
-
-        $this->loader->add_action('admin_enqueue_scripts', $plugin_admin, 'enqueue_styles');
-        $this->loader->add_action('admin_enqueue_scripts', $plugin_admin, 'enqueue_scripts');
     }
 
     /**
