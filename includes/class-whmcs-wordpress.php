@@ -75,6 +75,7 @@ class Whmcs_Wordpress {
 
         $this->load_dependencies();
         $this->define_public_hooks();
+        $this->define_admin_hooks();
         $this->define_api_endpoints();
 
         add_filter('plugin_action_links_' . $this->plugin_name . '/' . $this->plugin_name . '.php', [$this, 'plugin_links']);
@@ -136,6 +137,17 @@ class Whmcs_Wordpress {
 
     private function define_api_endpoints() {
         new Whmcs_Wordpress_Api($this->plugin_name, $this->loader, new Whmcs_Wordpress_Whmcs_Services());
+    }
+
+    /**
+     * Register all of the hooks related to the admin area functionality
+     * of the plugin.
+     *
+     * @since    1.0.0
+     * @access   private
+     */
+    private function define_admin_hooks() {
+        new Whmcs_Wordpress_Admin($this->get_plugin_name(), $this->get_version());
     }
 
     public function plugin_links($links) {
