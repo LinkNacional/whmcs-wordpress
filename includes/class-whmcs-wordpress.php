@@ -74,8 +74,8 @@ class Whmcs_Wordpress {
         $this->plugin_name = 'whmcs-wordpress';
 
         $this->load_dependencies();
-        $this->define_admin_hooks();
         $this->define_public_hooks();
+        $this->define_admin_hooks();
         $this->define_api_endpoints();
 
         add_filter('plugin_action_links_' . $this->plugin_name . '/' . $this->plugin_name . '.php', [$this, 'plugin_links']);
@@ -123,20 +123,6 @@ class Whmcs_Wordpress {
     }
 
     /**
-     * Register all of the hooks related to the admin area functionality
-     * of the plugin.
-     *
-     * @since    1.0.0
-     * @access   private
-     */
-    private function define_admin_hooks() {
-        $plugin_admin = new Whmcs_Wordpress_Admin($this->get_plugin_name(), $this->get_version());
-
-        $this->loader->add_action('admin_enqueue_scripts', $plugin_admin, 'enqueue_styles');
-        $this->loader->add_action('admin_enqueue_scripts', $plugin_admin, 'enqueue_scripts');
-    }
-
-    /**
      * Register all of the hooks related to the public-facing functionality
      * of the plugin.
      *
@@ -151,6 +137,17 @@ class Whmcs_Wordpress {
 
     private function define_api_endpoints() {
         new Whmcs_Wordpress_Api($this->plugin_name, $this->loader, new Whmcs_Wordpress_Whmcs_Services());
+    }
+
+    /**
+     * Register all of the hooks related to the admin area functionality
+     * of the plugin.
+     *
+     * @since    1.0.0
+     * @access   private
+     */
+    private function define_admin_hooks() {
+        new Whmcs_Wordpress_Admin($this->get_plugin_name(), $this->get_version());
     }
 
     public function plugin_links($links) {
